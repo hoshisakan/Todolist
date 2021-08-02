@@ -1,0 +1,7 @@
+.protect-route-root {
+    background-color: rgb(50, 158, 86);
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,90 @@
+.form-horizontal.control-label {
+    text-align: right;
+}
+
+.align-items-left-1 {
+    text-align: left;
+    margin-left: 0.95rem !important;
+    margin-right: 0.95rem !important;
+}
+
+.align-items-left-2 {
+    text-align: left;
+    margin-left: 0.25rem !important;
+    margin-right: 0.25rem !important;
+}
+
+.card-root {
+    min-height: 55vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.field-alert {
+    font-size: 16px;
+    color: red;
+    font-weight: bold;
+}
+
+.field-error-remind {
+    font-size: 16px;
+    color: red;
+    font-weight: bold;
+    text-align: right;
+}
+
+.book-todo-root-0 {
+    align-items: center;
+    top: 50%;
+    left: 50%;
+    bottom: 50%;
+}
+
+.book-todo-root-1 {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1.5rem;
+    margin-bottom: auto;
+    align-items: center;
+    justify-content: center;
+    width: 30rem;
+}
+
+.book-todo-root-2 {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0.5rem;
+    margin-bottom: auto;
+    align-items: center;
+    justify-content: center;
+    width: 30rem;
+}
+
+.book-todo-card-header {
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.book-todo-btn-0 {
+    margin-left: 0.35rem !important;
+    margin-right: 0.15rem !important;
+    margin-top: 0.95rem !important;
+    margin-bottom: 0.35rem !important;
+}
+
+.book-todo-btn-1 {
+    margin-left: 0.25rem !important;
+    margin-right: 0.25rem !important;
+}
+
+.book-todo-btn-2 {
+    margin-left: 0.15rem !important;
+    margin-right: 0.15rem !important;
+}
+
+.book-todo-btn-group-1 {
+    text-align: right;
+}

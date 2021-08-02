@@ -1,0 +1,23 @@
+.root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(9, 77, 202);
+}
+
+.card-mt-1 {
+    margin-left: auto;
+    margin-right: auto;
+    width: 25rem;
+}
+
+.btn-mt-1 {
+    text-align: center;
+}
+
+.link-mt-1 {
+    align-items: center;
+    justify-content: center;
+}

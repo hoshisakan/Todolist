@@ -1,0 +1,115 @@
+version: '3.9'
+services:
+    redis:
+        image: redis
+        container_name: dev_redis
+        command: redis-server --appendonly yes
+        networks:
+            - ${EXTERNAL_NETWORK:-demo}
+        ports:
+            - 6379:6379
+        volumes:
+            - ./server/data/redis/:/data
+        restart: always
+
+    nginx:
+        build: ./server/conf/nginx
+        container_name: dev_nginx
+        networks:
+            - ${EXTERNAL_NETWORK}
+        ports:
+            - 80:80
+            - 443:443
+            - 127.0.0.1:9001:9001
+            # - 9001:9001
+        volumes:
+            - temporary:/server/temporary
+            - ./server/website:/server/website
+            - ./server/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./server/conf/nginx/conf.d:/etc/nginx/conf.d
+            - ./server/logs/nginx/:/var/log/nginx
+            # - ./server/website/certs/ssl/:/etc/nginx/ssl
+            # - ./server/website/certs/data/:/usr/share/nginx/html/letsencrypt/
+        depends_on:
+            - mysql
+            - django
+        tty: true
+        restart: always
+
+    # react:
+    #     build: ./server/conf/react
+    #     container_name: dev_react
+    #     user: root
+    #     privileged: true
+    #     volumes:
+    #         - ./server/website/frontend:/usr/src/app
+    #     ports:
+    #         - 3000:3000
+    #         - 3001:3001
+    #     networks:
+    #         - ${EXTERNAL_NETWORK:-demo}
+    #     tty: true
+    #     restart: always
+
+    django:
+        build:
+            context: ./server/conf/django
+        container_name: dev_django
+        user: root
+        command: ['bash', '../shell/run_uwsgi.sh']
+        volumes:
+            - temporary:/server/temporary
+            - ./server/website:/server/website
+            - ./server/logs/django_log:/var/log/uwsgi
+        environment:
+            - PYTHONUNBUFFERED=${PYTHONUNBUFFERED:-1}
+        ports:
+            - 9028:9028
+        networks:
+            - ${EXTERNAL_NETWORK:-demo}
+        depends_on:
+            # - mongodb
+            - mysql
+            - redis
+        tty: true
+        restart: always
+
+    mysql:
+        image: mysql:5.7
+        container_name: dev_mysql
+        # command: 'mysqld --init-file /data/application/init.sql'
+        ports:
+            - 3306:3306
+        volumes:
+            - ./server/conf/mysql:/docker-entrypoint-initdb.d/
+            - ./server/conf/mysql/my.cnf:/etc/mysql/my.cnf
+            - ./server/data/mysql/:/var/lib/mysql/
+        environment:
+            - MYSQL_ROOT_USER=${MYSQL_ROOT_USER:-root}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-967832134}
+            - MYSQL_USER=${MYSQL_USER:-hoshisakan}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD:-967832}
+            - MYSQL_DATABASE=${MYSQL_DATABASE:-Default}
+        networks:
+            - ${EXTERNAL_NETWORK:-demo}
+        restart: always
+
+    phpMyAdmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: dev_phpMyAdmin
+        ports:
+            - 127.0.0.1:8080:80
+        environment:
+            - PMA_HOST=${MYSQL_HOST:-mysql}
+        depends_on:
+            - mysql
+        networks:
+            - ${EXTERNAL_NETWORK:-demo}
+        restart: always
+
+volumes:
+    temporary:
+
+networks:
+    common:
+        external: true
