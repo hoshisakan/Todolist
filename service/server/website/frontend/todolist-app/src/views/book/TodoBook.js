@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Button, ButtonGroup, Dropdown, DropdownButton, Container } from 'react-bootstrap'
-// import { Button, ButtonGroup, Dropdown, DropdownButton, Row, Container } from 'react-bootstrap'
 import '../../assets/css/form_level_style.css'
 import { apiFetchBookTodo } from '../../api.js'
 import TodoList from './TodoList'
@@ -8,7 +7,8 @@ import AddTodo from './AddTodo'
 import { orderByDropdownOptions } from './dropdown_options'
 import { convertToLocalDate } from '../../components/Timer/dateFormat'
 
-export default function TodoBook() {
+export default function TodoBook(props) {
+    const currentWindowSize = props.currentWindowSize === undefined ? '28rem' : props.currentWindowSize
     const [todoListData, setTodoListData] = useState([])
     const [updateData, setUpdateData] = useState(1)
     const [hide, setHide] = useState(true)
@@ -56,7 +56,7 @@ export default function TodoBook() {
     }, [initPageData])
 
     return (
-        <div className="book-todo-root-0">
+        <div>
             <Container fluid>
                 <Button className="book-todo-btn-0" variant="primary" onClick={openAddTodoCard}>
                     New
@@ -81,27 +81,26 @@ export default function TodoBook() {
                         )
                     })}
                 </DropdownButton>
-                {hide ? null : <AddTodo setRequestUpdate={setUpdateData} />}
+                {hide ? null : <AddTodo setRequestUpdate={setUpdateData} currentWindowSize={currentWindowSize} />}
                 {todoListData.map((task) => {
                     return (
-                        <div key={task.id}>
-                            <TodoList
-                                id={task.id}
-                                title={task.title}
-                                author={task.author}
-                                price={task.price}
-                                nationality={task.nationality}
-                                url={task.url}
-                                dueDate={task.due_date}
-                                isRead={task.is_read}
-                                daysSinceCreated={task.days_since_created}
-                                lastModifyDate={convertToLocalDate(task.last_modify_date)}
-                                createdAt={convertToLocalDate(task.created_at)}
-                                hideTodoListItem={false}
-                                editEnabled={false}
-                                setRequestUpdate={setUpdateData}
-                            />
-                        </div>
+                        <TodoList
+                            id={task.id}
+                            title={task.title}
+                            author={task.author}
+                            price={task.price}
+                            nationality={task.nationality}
+                            url={task.url}
+                            dueDate={task.due_date}
+                            isRead={task.is_read}
+                            daysSinceCreated={task.days_since_created}
+                            lastModifyDate={convertToLocalDate(task.last_modify_date)}
+                            createdAt={convertToLocalDate(task.created_at)}
+                            hideTodoListItem={false}
+                            editEnabled={false}
+                            setRequestUpdate={setUpdateData}
+                            currentWindowSize={currentWindowSize}
+                        />
                     )
                 })}
             </Container>

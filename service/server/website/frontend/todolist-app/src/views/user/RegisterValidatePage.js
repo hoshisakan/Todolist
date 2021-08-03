@@ -79,7 +79,6 @@ export default function RegisterValidatePage() {
                 </Row>
                 <Row>
                     {validateFailure ? (
-                        // <Alert variant="danger" style={{ width: '30rem', height: '18rem' }}>
                         <Alert variant="danger">
                             <Alert.Heading>Register Account Activate Failed</Alert.Heading>
                             <div className="alert-text-1">

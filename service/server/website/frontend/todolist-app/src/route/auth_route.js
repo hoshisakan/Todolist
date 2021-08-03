@@ -3,6 +3,8 @@ import React from 'react'
 import { Route, Redirect, useHistory } from 'react-router-dom'
 import { AuthRouter } from './routes'
 import '../assets/css/login_page_style.css'
+import { getCurrentWindowSize } from '../assets/js/get_winidow_size.js'
+
 
 export default function AuthRoutes() {
     const history = useHistory()
@@ -17,7 +19,8 @@ export default function AuthRoutes() {
                 route = (
                     <Route
                         path={prop.path_prefix + prop.path}
-                        render={(props) => <prop.component {...props} />}
+                        // render={(props) => <prop.component {...props} />}
+                        render={(props) => <prop.component currentWindowSize={getCurrentWindowSize()} />}
                         key={index}
                     />
                 )

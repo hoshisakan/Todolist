@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Card } from 'react-bootstrap'
 import '../../assets/css/form_level_style.css'
 import { apiCheckBookTodo } from '../../api.js'
@@ -20,8 +20,10 @@ export default function TodoBook(props) {
         // daysSinceCreated,
         lastModifyDate,
         createdAt,
+        currentWindowSize,
     } = props
     const cardColor = randomColor()
+    const [cardWidth, setCardWidth] = useState('28rem')
 
     const revokeCompeltedItem = async () => {
         // alert(id)
@@ -35,15 +37,19 @@ export default function TodoBook(props) {
             })
     }
 
+    useEffect(() => {
+        if (currentWindowSize.x < 1000) {
+            setCardWidth('24rem')
+        } else if (currentWindowSize.x >= 1000) {
+            setCardWidth('28rem')
+        }
+    }, [currentWindowSize])
+
     return (
         <div>
             <div className="book-todo-root-1">
-                <Card style={{ borderColor: cardColor }}>
-                    <Card.Header
-                        variant="primary"
-                        className="book-todo-card-header"
-                        style={{ background: cardColor }}
-                    >
+                <Card style={{ borderColor: cardColor, width: cardWidth }}>
+                    <Card.Header variant="primary" className="book-todo-card-header" style={{ background: cardColor }}>
                         {title}
                     </Card.Header>
                     <Card.Body>

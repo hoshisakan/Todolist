@@ -4,7 +4,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgb(9, 77, 202);
+    background-color: rgb(39, 85, 172);
+    display: grid;
 }
 
 .card-mt-1 {

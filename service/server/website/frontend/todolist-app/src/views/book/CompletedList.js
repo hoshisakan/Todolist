@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { ButtonGroup, Dropdown, DropdownButton } from 'react-bootstrap'
+import { ButtonGroup, Dropdown, DropdownButton, Container } from 'react-bootstrap'
 import '../../assets/css/form_level_style.css'
 import { apiFetchBookTodo } from '../../api.js'
 import CompletedTodoList from './CompletedTodoList'
 import { orderByDropdownOptions } from './dropdown_options'
 import { convertToLocalDate } from '../../components/Timer/dateFormat'
 
-export default function CompleteList() {
+export default function CompleteList(props) {
+    const currentWindowSize = props.currentWindowSize === undefined ? '28rem' : props.currentWindowSize
     const [todoListData, setTodoListData] = useState([])
     const [updateData, setUpdateData] = useState(1)
     const orderBy =
@@ -49,7 +50,7 @@ export default function CompleteList() {
 
     return (
         <div>
-            <div>
+            <Container fluid>
                 <DropdownButton
                     className="book-todo-btn-0"
                     variant="light"
@@ -70,8 +71,6 @@ export default function CompleteList() {
                         )
                     })}
                 </DropdownButton>
-            </div>
-            <div>
                 {todoListData.map((task) => {
                     return (
                         <div key={task.id}>
@@ -90,11 +89,12 @@ export default function CompleteList() {
                                 hideTodoListItem={false}
                                 editEnabled={false}
                                 setRequestUpdate={setUpdateData}
+                                currentWindowSize={currentWindowSize}
                             />
                         </div>
                     )
                 })}
-            </div>
+            </Container>
         </div>
     )
 }

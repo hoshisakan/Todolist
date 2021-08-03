@@ -1,15 +1,27 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap'
+// import { UserRouter, AuthRouter } from '../../route/routes.js'
+import { UserRouter } from '../../route/routes.js'
 
 export default function UserHeader(props) {
+    const location = useLocation()
+    // const allRoutes = UserRouter.concat(AuthRouter)
+    const getBrandText = () => {
+        for (let i = 0; i < UserRouter.length; i++) {
+            if (location.pathname.indexOf(UserRouter[i].path_prefix + UserRouter[i].path) !== -1) {
+                return UserRouter[i].name
+            }
+        }
+    }
     const username = props.username === undefined ? null : props.username
 
     return (
         <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
             <Container fluid>
-                {/* <Navbar.Brand as={Link} to="/">
-                </Navbar.Brand> */}
+                <Navbar.Brand>
+                    {getBrandText()}
+                </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">

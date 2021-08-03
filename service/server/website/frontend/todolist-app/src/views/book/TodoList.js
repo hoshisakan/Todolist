@@ -20,6 +20,7 @@ export default function TodoBook(props) {
         daysSinceCreated,
         lastModifyDate,
         createdAt,
+        currentWindowSize,
     } = props
     const [updateId, setId] = useState(id)
     const [updateTitle, setTitle] = useState(title)
@@ -42,6 +43,7 @@ export default function TodoBook(props) {
     const [showUrlFailedMsg, setShowUrlFailedMsg] = useState(false)
     const [titleFailedMsg, setTitleFailedMsg] = useState('')
     const [urlFailedMsg, setUrlFailedMsg] = useState('')
+    const [cardWidth, setCardWidth] = useState('28rem')
 
     const handleTitleChange = (e) => {
         setTitle(e.target.value)
@@ -104,7 +106,7 @@ export default function TodoBook(props) {
                         setTitleFailedMsg('The title has been exists')
                         setShowTitleFaildMsg(true)
                         setShowUrlFailedMsg(false)
-                    } else {
+                    } else if (error_msg['is_title_exists'] === false && error_msg['is_url_exists']) {
                         setUrlFailedMsg('The url has been exists')
                         setShowTitleFaildMsg(false)
                         setShowUrlFailedMsg(true)
@@ -156,24 +158,41 @@ export default function TodoBook(props) {
             })
     }
 
-    const updateCardColor = () => {
-        setCardColor(randomColor())
-    }
-
     const checkPropsUpdate = useCallback(() => {
-        updateCardColor()
-        setId(id)
-        setTitle(title)
-        setAuthor(author)
-        setPrice(price)
-        setIsRead(isRead)
-        setNationality(nationality)
-        setURL(url)
-        setDueDate(dueDate)
-        setLastModifyDate(lastModifyDate)
-        setCreatedAt(createdAt)
-        setDaysSinceCreated(daysSinceCreated)
-    }, [author, createdAt, daysSinceCreated, dueDate, id, isRead, lastModifyDate, nationality, price, title, url])
+        const updatePropsData = () => {
+            setCardColor(randomColor())
+            setId(id)
+            setTitle(title)
+            setAuthor(author)
+            setPrice(price)
+            setIsRead(isRead)
+            setNationality(nationality)
+            setURL(url)
+            setDueDate(dueDate)
+            setLastModifyDate(lastModifyDate)
+            setCreatedAt(createdAt)
+            setDaysSinceCreated(daysSinceCreated)
+        }
+        updatePropsData()
+        if (currentWindowSize.x < 1000) {
+            setCardWidth('24rem')
+        } else if (currentWindowSize.x >= 1000) {
+            setCardWidth('28rem')
+        }
+    }, [
+        author,
+        createdAt,
+        currentWindowSize,
+        daysSinceCreated,
+        dueDate,
+        id,
+        isRead,
+        lastModifyDate,
+        nationality,
+        price,
+        title,
+        url,
+    ])
 
     useEffect(() => {
         checkPropsUpdate()
@@ -206,7 +225,7 @@ export default function TodoBook(props) {
                     <div>
                         {displayEditForm ? (
                             <div className="book-todo-root-1">
-                                <Card style={{ borderColor: cardColor }}>
+                                <Card style={{ borderColor: cardColor, width: cardWidth }}>
                                     <Card.Header
                                         variant="primary"
                                         className="book-todo-card-header"
@@ -306,7 +325,7 @@ export default function TodoBook(props) {
                     </div>
                 ) : (
                     <div className="book-todo-root-1">
-                        <Card style={{ borderColor: cardColor }}>
+                        <Card style={{ borderColor: cardColor, width: cardWidth }}>
                             <Card.Header
                                 variant="primary"
                                 className="book-todo-card-header"

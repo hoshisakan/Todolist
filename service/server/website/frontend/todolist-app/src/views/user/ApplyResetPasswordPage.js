@@ -1,12 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Form, Button, Row, Col, Card, Container, Alert } from 'react-bootstrap'
 import { apiApplyResetPassword } from '../../api.js'
 
-export default function ApplyResetPasswordPage() {
+export default function ApplyResetPasswordPage(props) {
+    const currentWindowSize = props.currentWindowSize === undefined ? '28rem' : props.currentWindowSize
     const [email, setEmail] = useState('')
     const [applySuccess, setApplySuccess] = useState(false)
     const [applyFailure, setApplyFailure] = useState(false)
+    const [cardWidth, setCardWidth] = useState('28rem')
+    const [cardBtnSpacing, setCardBtnSpacing] = useState('10.5rem')
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value)
@@ -28,18 +31,31 @@ export default function ApplyResetPasswordPage() {
                 }
             })
             .catch((err) => {
-                console.error(err)
+                // console.error(err)
                 setApplyFailure(true)
                 setApplySuccess(false)
             })
     }
+
+    useEffect(() => {
+        if (currentWindowSize.x < 1000) {
+            setCardWidth('23rem')
+            setCardBtnSpacing('4.2rem')
+        } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
+            setCardWidth('27rem')
+            setCardBtnSpacing('8.3rem')
+        } else {
+            setCardWidth('30rem')
+            setCardBtnSpacing('11.3rem')
+        }
+    }, [currentWindowSize])
 
     return (
         <div>
             <Container>
                 <Row>
                     <Col md={12}>
-                        <Card border="light" bg="light" text="black" className="card-mt-1">
+                        <Card style={{ width: cardWidth }} border="light" bg="light" text="black" className="card-mt-1">
                             <Form>
                                 <Card.Header>Apply Reset Password</Card.Header>
                                 <Card.Body>
@@ -70,7 +86,17 @@ export default function ApplyResetPasswordPage() {
                                     </Form.Group>
                                 </Card.Body>
                                 <Card.Footer>
-                                    <Row>
+                                    <span style={{ textAlign: 'left', marginRight: cardBtnSpacing }}>
+                                        <Button variant="primary" onClick={handleApplySubmit} disabled={validateForm()}>
+                                            Apply Reset Password
+                                        </Button>
+                                    </span>
+                                    <span style={{ textAlign: 'right' }}>
+                                        <Link to="/session/login">
+                                            <Button variant="danger">Return</Button>
+                                        </Link>
+                                    </span>
+                                    {/* <Row>
                                         <Col md={9}>
                                             <Button
                                                 variant="primary"
@@ -85,7 +111,7 @@ export default function ApplyResetPasswordPage() {
                                                 <Button variant="danger">Return</Button>
                                             </Link>
                                         </Col>
-                                    </Row>
+                                    </Row> */}
                                 </Card.Footer>
                             </Form>
                         </Card>

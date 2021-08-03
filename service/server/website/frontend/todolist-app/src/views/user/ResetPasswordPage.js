@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { Form, Button, Row, Col, Card, Container, Alert, Modal } from 'react-bootstrap'
 import '../../assets/css/form_level_style.css'
@@ -6,6 +6,7 @@ import { apiResetPassword } from '../../api.js'
 import useInterval from '../../components/Timer/useInterval'
 
 export default function RegisterPage(props) {
+    const currentWindowSize = props.currentWindowSize === undefined ? '28rem' : props.currentWindowSize
     const history = useHistory()
     const { search } = useLocation()
     const searchParams = new URLSearchParams(search)
@@ -17,7 +18,7 @@ export default function RegisterPage(props) {
     const [delay] = useState(1000)
     const [countdown, setCountdown] = useState(5)
     const [errorMsg, setErrorMsg] = useState('')
-
+    const [cardWidth, setCardWidth] = useState('28rem')
 
     const handlePasswordChange = (e) => {
         setNewPassword(e.target.value)
@@ -66,6 +67,14 @@ export default function RegisterPage(props) {
         history.push('/session/login')
     }
 
+    useEffect(() => {
+        if (currentWindowSize.x < 1000) {
+            setCardWidth('22rem')
+        } else if (currentWindowSize.x >= 1000) {
+            setCardWidth('30rem')
+        }
+    }, [currentWindowSize])
+
     return (
         <div>
             <Container fluid>
@@ -86,7 +95,7 @@ export default function RegisterPage(props) {
                 ) : null}
                 <Row>
                     <Col md={12}>
-                        <Card border="black" bg="light" text="black" className="card-mt-1">
+                        <Card style={{ width: cardWidth }} border="black" bg="light" text="black" className="card-mt-1">
                             <Form>
                                 <Card.Header>Reset Password</Card.Header>
                                 <Card.Body>
@@ -122,6 +131,7 @@ export default function RegisterPage(props) {
                                     <div className="link-mt-1">
                                         <Button
                                             variant="primary"
+                                            block
                                             onClick={handleResetPasswordSubmit}
                                             disabled={checkSubmitValues()}
                                         >

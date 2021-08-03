@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Form, Button, Row, Col, Card, Container, Alert } from 'react-bootstrap'
 import '../../assets/css/form_level_style.css'
 import '../../assets/css/register_page_style.css'
 import { apiRegisterUser, apiReissueRegister } from '../../api.js'
 
-export default function RegisterPage() {
+export default function RegisterPage(props) {
+    const currentWindowSize = props.currentWindowSize === undefined ? '28rem' : props.currentWindowSize
     const [email, setEmail] = useState('')
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -16,8 +17,7 @@ export default function RegisterPage() {
     const [emailFieldAlert, setEmailFieldAlert] = useState('')
     const [displayReissueMsg, setDisplayReissueMsg] = useState(false)
     const [reissueMsg, setReissueMsg] = useState('')
-
-
+    const [cardWidth, setCardWidth] = useState('28rem')
 
     const handleUsernameChange = (e) => {
         setUsername(e.target.value)
@@ -69,7 +69,7 @@ export default function RegisterPage() {
                     }
                 })
                 .catch((err) => {
-                    console.error(err.response.data)
+                    // console.error(err.response.data)
                     setShowRegisterSuccess(false)
                     let detail = err.response.data['error']
                     if (detail['is_username_registered'] === true && detail['is_email_registered'] === true) {
@@ -105,17 +105,27 @@ export default function RegisterPage() {
                 }
             })
             .catch((err) => {
-                console.log(err)
+                // console.log(err)
                 clearReissueMessage()
             })
     }
+
+    useEffect(() => {
+        if (currentWindowSize.x < 1000) {
+            setCardWidth('23rem')
+        } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
+            setCardWidth('28rem')
+        } else {
+            setCardWidth('31rem')
+        }
+    }, [currentWindowSize])
 
     return (
         <div>
             <Container fluid>
                 <Row>
                     <Col md={12}>
-                        <Card style={{ width: '28rem' }} border="black" bg="light" text="black" className="card-mt-1">
+                        <Card style={{ width: cardWidth }} border="black" bg="light" text="black" className="card-mt-1">
                             <Form>
                                 <Card.Header>User Register</Card.Header>
 
@@ -124,9 +134,7 @@ export default function RegisterPage() {
                                         <div>
                                             <Alert variant="success">
                                                 <Alert.Heading>Register Successfully</Alert.Heading>
-                                                <p>
-                                                   {registerMsg}
-                                                </p>
+                                                <p>{registerMsg}</p>
                                                 <hr />
                                                 <div className="btn-mt-1">
                                                     <Button variant="primary" onClick={handleReissueRequest}>
@@ -184,23 +192,19 @@ export default function RegisterPage() {
                                             value={rePassword}
                                         />
                                     </Form.Group>
+                                    <Button
+                                        variant="primary"
+                                        block
+                                        onClick={handleRegisterSubmit}
+                                        disabled={checkSubmitValues()}
+                                    >
+                                        Sign up
+                                    </Button>
                                 </Card.Body>
-
                                 <Card.Footer>
-                                    <Row className="link-mt-1">
-                                        <Col md={5}>
-                                            <Button
-                                                variant="primary"
-                                                onClick={handleRegisterSubmit}
-                                                disabled={checkSubmitValues()}
-                                            >
-                                                Sign up
-                                            </Button>
-                                        </Col>
-                                        <Col md={7}>
-                                            Already have account? <Link to="/session/login">Sign in</Link>
-                                        </Col>
-                                    </Row>
+                                    <div style={{ textAlign: 'center' }}>
+                                        Already have account? <Link to="/session/login">Sign in</Link>
+                                    </div>
                                 </Card.Footer>
                             </Form>
                         </Card>

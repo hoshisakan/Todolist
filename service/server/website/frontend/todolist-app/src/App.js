@@ -5,7 +5,6 @@ import AuthRoutes from './route/auth_route'
 import { NotMatch404 } from './views/error/NotMatch404'
 import { checkTokenExists } from './auth.js'
 
-
 export default function App() {
     const history = useHistory()
     const { search } = useLocation()
@@ -35,12 +34,10 @@ export default function App() {
     }, [checkUserAuth])
 
     return (
-        <div>
-            <Switch>
-                <Route path="/404" component={NotMatch404} />
-                <Route path="/session" render={(props) => <AuthRoutes {...props} />} />
-                <Route exect path="/user" render={(props) => <ProtectedRoutes {...props} />} />
-            </Switch>
-        </div>
+        <Switch>
+            <Route path="/404" component={NotMatch404} />
+            <Route path="/session" render={(props) => <AuthRoutes {...props} />} />
+            <Route exect path="/user" render={(props) => <ProtectedRoutes {...props} />} />
+        </Switch>
     )
 }

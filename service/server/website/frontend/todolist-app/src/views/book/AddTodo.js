@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import '../../assets/css/form_level_style.css'
 import { apiAddBookTodo } from '../../api.js'
 import { Button, Card, Form, Row, Col } from 'react-bootstrap'
@@ -6,7 +6,7 @@ import { randomColor } from '../../components/Cards/color'
 
 export default function AddTodo(props) {
     // eslint-disable-next-line no-unused-vars
-    const { setRequestUpdate } = props
+    const { setRequestUpdate, currentWindowSize } = props
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [price, setPrice] = useState('')
@@ -18,6 +18,7 @@ export default function AddTodo(props) {
     const [titleFailedMsg, setTitleFailedMsg] = useState('')
     const [urlFailedMsg, setUrlFailedMsg] = useState('')
     const cardColor = randomColor()
+    const [cardWidth, setCardWidth] = useState('28rem')
 
     const handleTitleChange = (e) => {
         setTitle(e.target.value)
@@ -88,7 +89,7 @@ export default function AddTodo(props) {
                 // console.error(err)
                 let error_status_code = err.response.status
                 let error_msg = err.response.data.error
-                console.error(error_status_code, error_msg)
+                // console.error(error_status_code, error_msg)
                 if (error_status_code === 400) {
                     if (error_msg['is_title_exists'] && error_msg['is_url_exists']) {
                         setTitleFailedMsg('The title has been exists')
@@ -114,10 +115,18 @@ export default function AddTodo(props) {
         props.setRequestUpdate(0)
     }
 
+    useEffect(() => {
+        if (currentWindowSize.x < 1000) {
+            setCardWidth('24rem')
+        } else if (currentWindowSize.x >= 1000) {
+            setCardWidth('28rem')
+        }
+    }, [currentWindowSize.x])
+
     return (
         <div>
             <div className="book-todo-root-1">
-                <Card style={{ borderColor: cardColor }}>
+                <Card style={{ borderColor: cardColor, width: cardWidth }}>
                     <Card.Header variant="primary" className="book-todo-card-header" style={{ background: cardColor }}>
                         Add Todo
                     </Card.Header>
