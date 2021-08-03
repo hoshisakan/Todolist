@@ -37,6 +37,7 @@ export default function CompleteList(props) {
                 })
                 .catch((err) => {
                     setUpdateData(-1)
+                    window.location.reload()
                 })
         }
         if (updateData > 0) {

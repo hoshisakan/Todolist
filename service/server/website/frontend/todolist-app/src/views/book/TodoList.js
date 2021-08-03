@@ -44,6 +44,8 @@ export default function TodoBook(props) {
     const [titleFailedMsg, setTitleFailedMsg] = useState('')
     const [urlFailedMsg, setUrlFailedMsg] = useState('')
     const [cardWidth, setCardWidth] = useState('28rem')
+    const [cardMinHeight, setCardMinHeight] = useState('43vh')
+
 
     const handleTitleChange = (e) => {
         setTitle(e.target.value)
@@ -176,8 +178,14 @@ export default function TodoBook(props) {
         updatePropsData()
         if (currentWindowSize.x < 1000) {
             setCardWidth('24rem')
-        } else if (currentWindowSize.x >= 1000) {
+            setCardMinHeight('43vh')
+        } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
+            
             setCardWidth('28rem')
+            setCardMinHeight('43vh')
+        } else {
+            setCardWidth('28rem')
+            setCardMinHeight('35vh')
         }
     }, [
         author,
@@ -324,7 +332,7 @@ export default function TodoBook(props) {
                         ) : null}
                     </div>
                 ) : (
-                    <div className="book-todo-root-1">
+                    <div className="book-todo-root-1" style={{ minHeight: cardMinHeight }}>
                         <Card style={{ borderColor: cardColor, width: cardWidth }}>
                             <Card.Header
                                 variant="primary"

@@ -41,6 +41,7 @@ export default function TodoBook(props) {
                 })
                 .catch((err) => {
                     setUpdateData(-1)
+                    window.location.reload()
                 })
         }
         if (updateData > 0) {
@@ -84,23 +85,25 @@ export default function TodoBook(props) {
                 {hide ? null : <AddTodo setRequestUpdate={setUpdateData} currentWindowSize={currentWindowSize} />}
                 {todoListData.map((task) => {
                     return (
-                        <TodoList
-                            id={task.id}
-                            title={task.title}
-                            author={task.author}
-                            price={task.price}
-                            nationality={task.nationality}
-                            url={task.url}
-                            dueDate={task.due_date}
-                            isRead={task.is_read}
-                            daysSinceCreated={task.days_since_created}
-                            lastModifyDate={convertToLocalDate(task.last_modify_date)}
-                            createdAt={convertToLocalDate(task.created_at)}
-                            hideTodoListItem={false}
-                            editEnabled={false}
-                            setRequestUpdate={setUpdateData}
-                            currentWindowSize={currentWindowSize}
-                        />
+                        <div key={task.id}>
+                            <TodoList
+                                id={task.id}
+                                title={task.title}
+                                author={task.author}
+                                price={task.price}
+                                nationality={task.nationality}
+                                url={task.url}
+                                dueDate={task.due_date}
+                                isRead={task.is_read}
+                                daysSinceCreated={task.days_since_created}
+                                lastModifyDate={convertToLocalDate(task.last_modify_date)}
+                                createdAt={convertToLocalDate(task.created_at)}
+                                hideTodoListItem={false}
+                                editEnabled={false}
+                                setRequestUpdate={setUpdateData}
+                                currentWindowSize={currentWindowSize}
+                            />
+                        </div>
                     )
                 })}
             </Container>

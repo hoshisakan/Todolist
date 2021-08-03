@@ -46,7 +46,9 @@ export default function UserHeader(props) {
                         </NavDropdown>
                     </Nav>
                     <Nav.Item className="ml-auto">
-                        <Navbar.Text style={{ color: 'white' }}>Hi {username} !</Navbar.Text>
+                        <Navbar.Text style={{ color: 'white', fontSize: '18px'}}>
+                            Signed in as: <span style= {{ fontWeight: 'bold' }}>{username}</span>
+                        </Navbar.Text>
                     </Nav.Item>
                 </Navbar.Collapse>
             </Container>

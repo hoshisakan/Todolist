@@ -210,20 +210,21 @@ class UserViewset(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False)
     def logout(self, request, *args, **kwargs):
         try:
-            refresh_token = request.data['refresh']
-            protect_auth = GenerateProtectAuthToken(salt='auth token')
-            raw_refresh_token = protect_auth.descrypt_payload(refresh_token)
-            valid_data = TokenBackend(algorithm='HS256').decode(raw_refresh_token, verify=False)
-            username = valid_data['user']
-            check_token_exists = cache.get(username, False)
-            if check_token_exists is not False:
-                revoke_token = RefreshToken(raw_refresh_token)
-                revoke_token.blacklist()
-                cache.delete(username)
+            refresh_token = request.data.get('refresh', None)
+            if refresh_token is not None:
+                protect_auth = GenerateProtectAuthToken(salt='auth token')
+                raw_refresh_token = protect_auth.descrypt_payload(refresh_token)
+                valid_data = TokenBackend(algorithm='HS256').decode(raw_refresh_token, verify=False)
+                username = valid_data['user']
+            else:
+                raise Exception("Refresh token can't be empty, will force logout account")
+            revoke_token = RefreshToken(raw_refresh_token)
+            revoke_token.blacklist()
+            cache.delete(username)
             return Response({"message": "Success Logout", "allow_logout": True})
         except Exception as e:
-            print({'error': e.args[0], "allow_logout": False})
-            return Response({'error': e.args[0], "allow_logout": False}, status=status.HTTP_400_BAD_REQUEST)
+            cache.delete(username)
+            return Response({'error': e.args[0], "allow_logout": True}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['POST'], detail=False, url_path='token-refresh')
     def token_refresh(self, request):
@@ -251,9 +252,17 @@ class UserViewset(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False, url_path='token-expire-check')
     def token_expire_check(self, request):
         try:
-            data = request.data
+            access_token = request.data.get('token', None)
+            if access_token is None:
+                raise Exception("Token can't be empty")
             protect_auth = GenerateProtectAuthToken(salt='auth token')
-            raw_access_token = protect_auth.descrypt_payload(data['token'])
+            raw_access_token = protect_auth.descrypt_payload(access_token)
+
+            decrypt_token = TokenBackend(algorithm='HS256').decode(raw_access_token, verify=False)
+            username = decrypt_token['user']
+            
+            if cache.get(username, False) is False:
+                raise Exception("Invalid token or expired")
             self.serializer_class = TokenVerifyObtainSerializer
             serializer = self.get_serializer(data={"token": raw_access_token})
             serializer.is_valid(raise_exception=True)

@@ -24,6 +24,8 @@ export default function TodoBook(props) {
     } = props
     const cardColor = randomColor()
     const [cardWidth, setCardWidth] = useState('28rem')
+    const [cardMinHeight, setCardMinHeight] = useState('43vh')
+
 
     const revokeCompeltedItem = async () => {
         // alert(id)
@@ -32,7 +34,7 @@ export default function TodoBook(props) {
                 props.setRequestUpdate(1)
             })
             .catch((err) => {
-                console.error(err)
+                // console.error(err)
                 props.setRequestUpdate(-1)
             })
     }
@@ -40,14 +42,19 @@ export default function TodoBook(props) {
     useEffect(() => {
         if (currentWindowSize.x < 1000) {
             setCardWidth('24rem')
-        } else if (currentWindowSize.x >= 1000) {
+            setCardMinHeight('43vh')
+        } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
             setCardWidth('28rem')
+            setCardMinHeight('43vh')
+        } else {
+            setCardWidth('28rem')
+            setCardMinHeight('35vh')
         }
     }, [currentWindowSize])
 
     return (
         <div>
-            <div className="book-todo-root-1">
+            <div className="book-todo-root-1" style={{ minHeight: cardMinHeight }}>
                 <Card style={{ borderColor: cardColor, width: cardWidth }}>
                     <Card.Header variant="primary" className="book-todo-card-header" style={{ background: cardColor }}>
                         {title}

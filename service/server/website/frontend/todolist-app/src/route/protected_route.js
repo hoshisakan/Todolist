@@ -7,7 +7,7 @@ import { apiRefreshToken, apiUpdateUserProfile, apiTokenExpireCheck, apiLogoutRe
 import '../assets/css/protected_page_style.css'
 import useInterval from '../components/Timer/useInterval'
 import { checkTokenExists, removeAllLocalStorage } from '../auth'
-import { getCurrentWindowSize } from '../assets/js/get_winidow_size.js'
+import { getCurrentWindowSize } from '../assets/js/getWindowSize.js'
 
 export default function ProtectedRoutes(props) {
     const history = useHistory()
@@ -98,12 +98,11 @@ export default function ProtectedRoutes(props) {
     const requestRenderRoute = () => {
         let route = getRoutes(UserRouter)
         // alert('will be clicked')
-        // if (window.performance && route !== null) {
-        //     if (performance.navigation.type === 1) {
-        //         // console.log('This page is reloaded')
-        //         checkUserAuth()
-        //     }
-        // }
+        if (window.performance) {
+            if (performance.navigation.type === 1) {
+                checkUserAuth()
+            }
+        }
         return route
     }
 
