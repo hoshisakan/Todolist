@@ -6,9 +6,13 @@ import TodoList from './TodoList'
 import AddTodo from './AddTodo'
 import { orderByDropdownOptions } from './dropdown_options'
 import { convertToLocalDate } from '../../components/Timer/dateFormat'
+import useInterval from '../../components/Timer/useInterval'
+import { getCurrentWindowSize } from '../../assets/js/getWindowSize.js'
+import { randomColor } from '../../components/Cards/color'
+
 
 export default function TodoBook(props) {
-    const currentWindowSize = props.currentWindowSize === undefined ? '28rem' : props.currentWindowSize
+    const [currentWindowSize, setCurrentWindowSize] = useState(getCurrentWindowSize())
     const [todoListData, setTodoListData] = useState([])
     const [updateData, setUpdateData] = useState(1)
     const [hide, setHide] = useState(true)
@@ -32,8 +36,8 @@ export default function TodoBook(props) {
     }
 
     const initPageData = useCallback(() => {
-        const fetchTodoList = async () => {
-            await apiFetchBookTodo(orderBy, false)
+        const fetchTodoList = () => {
+            apiFetchBookTodo(orderBy, false)
                 .then((res) => {
                     const data = res.data.info
                     setTodoListData(data)
@@ -51,6 +55,10 @@ export default function TodoBook(props) {
             setHide(true)
         }
     }, [orderBy, updateData])
+
+    useInterval(() => {
+        setCurrentWindowSize(getCurrentWindowSize())
+    }, 1000)
 
     useEffect(() => {
         initPageData()
@@ -82,7 +90,7 @@ export default function TodoBook(props) {
                         )
                     })}
                 </DropdownButton>
-                {hide ? null : <AddTodo setRequestUpdate={setUpdateData} currentWindowSize={currentWindowSize} />}
+                {hide ? null : <AddTodo setRequestUpdate={setUpdateData} currentWindowSize={currentWindowSize} cardColor={randomColor()} />}
                 {todoListData.map((task) => {
                     return (
                         <div key={task.id}>
@@ -95,13 +103,14 @@ export default function TodoBook(props) {
                                 url={task.url}
                                 dueDate={task.due_date}
                                 isRead={task.is_read}
-                                daysSinceCreated={task.days_since_created}
+                                // daysSinceCreated={task.days_since_created}
                                 lastModifyDate={convertToLocalDate(task.last_modify_date)}
                                 createdAt={convertToLocalDate(task.created_at)}
                                 hideTodoListItem={false}
                                 editEnabled={false}
                                 setRequestUpdate={setUpdateData}
                                 currentWindowSize={currentWindowSize}
+                                cardColor={randomColor()}
                             />
                         </div>
                     )

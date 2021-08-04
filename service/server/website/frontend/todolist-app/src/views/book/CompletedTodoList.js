@@ -2,13 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { Button, Card } from 'react-bootstrap'
 import '../../assets/css/form_level_style.css'
 import { apiCheckBookTodo } from '../../api.js'
-import { randomColor } from '../../components/Cards/color'
 
 export default function TodoBook(props) {
-    // eslint-disable-next-line no-unused-vars
     const {
-        // eslint-disable-next-line no-unused-vars
-        setRequestcompleted,
         id,
         title,
         author,
@@ -21,11 +17,15 @@ export default function TodoBook(props) {
         lastModifyDate,
         createdAt,
         currentWindowSize,
+        cardColor,
     } = props
-    const cardColor = randomColor()
-    const [cardWidth, setCardWidth] = useState('28rem')
+    const [cardWidth, setCardWidth] = useState('33rem')
     const [cardMinHeight, setCardMinHeight] = useState('43vh')
-
+    const [lastTimeWindowSize, setLastTimeWindowSize] = useState({
+        x: 0,
+        y: 0,
+    })
+    const [renderCardColor] = useState(cardColor)
 
     const revokeCompeltedItem = async () => {
         // alert(id)
@@ -40,23 +40,35 @@ export default function TodoBook(props) {
     }
 
     useEffect(() => {
-        if (currentWindowSize.x < 1000) {
-            setCardWidth('24rem')
-            setCardMinHeight('43vh')
-        } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
-            setCardWidth('28rem')
-            setCardMinHeight('43vh')
-        } else {
-            setCardWidth('28rem')
-            setCardMinHeight('35vh')
+        if (lastTimeWindowSize.x !== currentWindowSize.x) {
+            if (currentWindowSize.x < 1000) {
+                setCardWidth('24rem')
+                setCardMinHeight('43vh')
+            } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
+                // setCardWidth('28rem')
+                setCardWidth('33rem')
+                setCardMinHeight('43vh')
+            } else {
+                // setCardWidth('28rem')
+                setCardWidth('40rem')
+                setCardMinHeight('33vh')
+                // setCardMinHeight('35vh')
+            }
+            setLastTimeWindowSize(currentWindowSize)
+            // setRenderCardColor(cardColor) // when detecting windows size changed, then re-render the card color
         }
-    }, [currentWindowSize])
+    // }, [cardColor, currentWindowSize, lastTimeWindowSize])
+    }, [currentWindowSize, lastTimeWindowSize])
 
     return (
         <div>
             <div className="book-todo-root-1" style={{ minHeight: cardMinHeight }}>
-                <Card style={{ borderColor: cardColor, width: cardWidth }}>
-                    <Card.Header variant="primary" className="book-todo-card-header" style={{ background: cardColor }}>
+                <Card style={{ borderColor: renderCardColor, width: cardWidth }}>
+                    <Card.Header
+                        variant="primary"
+                        className="book-todo-card-header"
+                        style={{ background: renderCardColor }}
+                    >
                         {title}
                     </Card.Header>
                     <Card.Body>
@@ -75,7 +87,7 @@ export default function TodoBook(props) {
                             </Button>
                         </div>
                     </Card.Body>
-                    <Card.Footer style={{ borderColor: cardColor }}>
+                    <Card.Footer style={{ borderColor: renderCardColor }}>
                         <div style={{ fontWeight: 'bold' }}>Last Modified: {lastModifyDate}</div>
                     </Card.Footer>
                 </Card>

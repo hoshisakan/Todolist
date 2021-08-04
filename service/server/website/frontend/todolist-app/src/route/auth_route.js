@@ -13,13 +13,10 @@ export default function AuthRoutes() {
         let route = null
         let index = 0
         for (let prop of routes) {
-            // console.log(history.location.pathname)
-            // console.log(prop.path_prefix + prop.path)
             if (prop.path_prefix === '/session' && (history.location.pathname === prop.path_prefix + prop.path)) {
                 route = (
                     <Route
                         path={prop.path_prefix + prop.path}
-                        // render={(props) => <prop.component {...props} />}
                         render={(props) => <prop.component currentWindowSize={getCurrentWindowSize()} />}
                         key={index}
                     />
@@ -41,5 +38,4 @@ export default function AuthRoutes() {
     }
 
     return <div className="root">{renderRoute()}</div>
-    // return <div>{renderRoute()}</div>
 }

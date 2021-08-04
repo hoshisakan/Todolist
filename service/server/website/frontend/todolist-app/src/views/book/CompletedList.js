@@ -5,9 +5,13 @@ import { apiFetchBookTodo } from '../../api.js'
 import CompletedTodoList from './CompletedTodoList'
 import { orderByDropdownOptions } from './dropdown_options'
 import { convertToLocalDate } from '../../components/Timer/dateFormat'
+import useInterval from '../../components/Timer/useInterval'
+import { getCurrentWindowSize } from '../../assets/js/getWindowSize.js'
+import { randomColor } from '../../components/Cards/color'
+
 
 export default function CompleteList(props) {
-    const currentWindowSize = props.currentWindowSize === undefined ? '28rem' : props.currentWindowSize
+    const [currentWindowSize, setCurrentWindowSize] = useState(getCurrentWindowSize())
     const [todoListData, setTodoListData] = useState([])
     const [updateData, setUpdateData] = useState(1)
     const orderBy =
@@ -20,9 +24,7 @@ export default function CompleteList(props) {
     }
 
     const handleOrderByChange = (eventKey, event) => {
-        // console.log(eventKey)
         let orderBy = orderByDropdownOptions[eventKey].value
-        // setOrderBy(orderBy)
         setBookTodoSort(orderBy)
         setUpdateData(1)
     }
@@ -44,6 +46,10 @@ export default function CompleteList(props) {
             fetchTodoList()
         }
     }, [orderBy, updateData])
+
+    useInterval(() => {
+        setCurrentWindowSize(getCurrentWindowSize())
+    }, 1000)
 
     useEffect(() => {
         initPageData()
@@ -84,13 +90,14 @@ export default function CompleteList(props) {
                                 url={task.url}
                                 dueDate={task.due_date}
                                 isRead={task.is_read}
-                                daysSinceCreated={task.days_since_created}
+                                // daysSinceCreated={task.days_since_created}
                                 lastModifyDate={convertToLocalDate(task.last_modify_date)}
                                 createdAt={convertToLocalDate(task.created_at)}
                                 hideTodoListItem={false}
                                 editEnabled={false}
                                 setRequestUpdate={setUpdateData}
                                 currentWindowSize={currentWindowSize}
+                                cardColor={randomColor()}
                             />
                         </div>
                     )

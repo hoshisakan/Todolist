@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react'
 import '../../assets/css/form_level_style.css'
 import { apiAddBookTodo } from '../../api.js'
 import { Button, Card, Form, Row, Col } from 'react-bootstrap'
-import { randomColor } from '../../components/Cards/color'
 
 export default function AddTodo(props) {
     // eslint-disable-next-line no-unused-vars
-    const { setRequestUpdate, currentWindowSize } = props
+    const { setRequestUpdate, currentWindowSize, cardColor } = props
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
     const [price, setPrice] = useState('')
@@ -17,8 +16,12 @@ export default function AddTodo(props) {
     const [showUrlFailedMsg, setShowUrlFailedMsg] = useState(false)
     const [titleFailedMsg, setTitleFailedMsg] = useState('')
     const [urlFailedMsg, setUrlFailedMsg] = useState('')
-    const cardColor = randomColor()
+    const [lastTimeWindowSize, setLastTimeWindowSize] = useState({
+        x: 0,
+        y: 0,
+    })
     const [cardWidth, setCardWidth] = useState('28rem')
+    const [renderCardColor] = useState(cardColor)
 
     const handleTitleChange = (e) => {
         setTitle(e.target.value)
@@ -67,7 +70,7 @@ export default function AddTodo(props) {
         setUrlFailedMsg('')
     }
 
-    const handleAddEvent = async () => {
+    const addTodoRequest = () => {
         clearErrorMsg()
         let data = {
             title: title,
@@ -78,11 +81,11 @@ export default function AddTodo(props) {
             url: url,
             due_date: dueDate,
         }
-        await apiAddBookTodo(data)
+        apiAddBookTodo(data)
             .then((res) => {
                 if (res.data['is_writed']) {
-                    props.setRequestUpdate(1)
                     clearForm()
+                    props.setRequestUpdate(1)
                 }
             })
             .catch((err) => {
@@ -106,8 +109,12 @@ export default function AddTodo(props) {
                         setShowUrlFailedMsg(true)
                     }
                 }
-                props.setRequestUpdate(-1)
+                // props.setRequestUpdate(-1)
             })
+    }
+
+    const handleAddEvent = () => {
+        addTodoRequest()
     }
 
     const handleCancelEvent = () => {
@@ -116,18 +123,31 @@ export default function AddTodo(props) {
     }
 
     useEffect(() => {
-        if (currentWindowSize.x < 1000) {
-            setCardWidth('24rem')
-        } else if (currentWindowSize.x >= 1000) {
-            setCardWidth('28rem')
+        if (lastTimeWindowSize.x !== currentWindowSize.x) {
+            if (currentWindowSize.x < 1000) {
+                setCardWidth('24rem')
+            } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
+                // setCardWidth('28rem')
+                setCardWidth('33em')
+            } else {
+                // setCardWidth('28rem')
+                setCardWidth('40rem')
+            }
+            setLastTimeWindowSize(currentWindowSize)
+            // setRenderCardColor(cardColor) // when detecting windows size changed, then re-render the card color
         }
-    }, [currentWindowSize.x])
+        // }, [cardColor, currentWindowSize, currentWindowSize.x, lastTimeWindowSize.x])
+    }, [currentWindowSize, currentWindowSize.x, lastTimeWindowSize.x])
 
     return (
         <div>
             <div className="book-todo-root-1">
-                <Card style={{ borderColor: cardColor, width: cardWidth }}>
-                    <Card.Header variant="primary" className="book-todo-card-header" style={{ background: cardColor }}>
+                <Card style={{ borderColor: renderCardColor, width: cardWidth }}>
+                    <Card.Header
+                        variant="primary"
+                        className="book-todo-card-header"
+                        style={{ background: renderCardColor }}
+                    >
                         Add Todo
                     </Card.Header>
                     <Card.Body>

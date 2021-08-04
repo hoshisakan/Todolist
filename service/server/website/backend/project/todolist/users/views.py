@@ -260,20 +260,29 @@ class UserViewset(viewsets.ModelViewSet):
 
             decrypt_token = TokenBackend(algorithm='HS256').decode(raw_access_token, verify=False)
             username = decrypt_token['user']
-            
+            expires_in_timestamp = decrypt_token['exp']
+            expires_in_datetime = DT.convert_timestamp_to_datetime(expires_in_timestamp)
+            print(expires_in_datetime)
+            now_datetime = DT.get_current_datetime()
+            print(now_datetime)
+            token_time_left = int((expires_in_datetime - now_datetime).total_seconds())
+            print(token_time_left)
+
             if cache.get(username, False) is False:
-                raise Exception("Invalid token or expired")
+                raise Exception("Invalid token or expired or will expire")
             self.serializer_class = TokenVerifyObtainSerializer
             serializer = self.get_serializer(data={"token": raw_access_token})
             serializer.is_valid(raise_exception=True)
             validated_data = serializer.validated_data
             validated_data['message'] = "Token is valid"
             validated_data['is_valid'] = True
+            validated_data['token_time_left'] = token_time_left
             return Response(validated_data, status=status.HTTP_200_OK)
         except Exception as e:
             err_msg = {
                 "error": e.args[0],
-                "is_invalid": False
+                "is_invalid": False,
+                "token_time_left": token_time_left
             }
             return Response(err_msg, status=status.HTTP_400_BAD_REQUEST)
 

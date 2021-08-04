@@ -2,13 +2,9 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { Button, Card, Modal, Form, Row, Col } from 'react-bootstrap'
 import '../../assets/css/form_level_style.css'
 import { apiDeleteBookTodo, apiEditBookTodo, apiCheckBookTodo } from '../../api.js'
-import { randomColor } from '../../components/Cards/color'
 
 export default function TodoBook(props) {
-    // eslint-disable-next-line no-unused-vars
     const {
-        // eslint-disable-next-line no-unused-vars
-        setRequestUpdate,
         id,
         title,
         author,
@@ -17,25 +13,20 @@ export default function TodoBook(props) {
         nationality,
         url,
         dueDate,
-        daysSinceCreated,
+        // daysSinceCreated,
         lastModifyDate,
         createdAt,
         currentWindowSize,
+        cardColor
     } = props
     const [updateId, setId] = useState(id)
     const [updateTitle, setTitle] = useState(title)
     const [updateAuthor, setAuthor] = useState(author)
     const [updatePrice, setPrice] = useState(price)
-    const [updateIsRead, setIsRead] = useState(isRead)
     const [updateNationality, setNationality] = useState(nationality)
     const [updateUrl, setURL] = useState(url)
     const [updateDueDate, setDueDate] = useState(dueDate)
-    const [readLastModifyDate, setLastModifyDate] = useState(lastModifyDate)
-    const [readCreatedAt, setCreatedAt] = useState(createdAt)
-    // eslint-disable-next-line no-unused-vars
-    const [readDaysSinceCreated, setDaysSinceCreated] = useState(daysSinceCreated)
     const [editEnabled, setEditEnabled] = useState(false)
-    const [cardColor, setCardColor] = useState('')
     const [displayDeleteConfirm, setDisplayDeleteConfirm] = useState(false)
     const [requestEditId, setRequestEditId] = useState(0)
     const [displayEditForm, setDisplayEditForm] = useState(false)
@@ -43,8 +34,14 @@ export default function TodoBook(props) {
     const [showUrlFailedMsg, setShowUrlFailedMsg] = useState(false)
     const [titleFailedMsg, setTitleFailedMsg] = useState('')
     const [urlFailedMsg, setUrlFailedMsg] = useState('')
-    const [cardWidth, setCardWidth] = useState('28rem')
+    const [cardWidth, setCardWidth] = useState('33rem')
     const [cardMinHeight, setCardMinHeight] = useState('43vh')
+    const [lastTimeWindowSize, setLastTimeWindowSize] = useState({
+        x: 0,
+        y: 0,
+    })
+    const [renderCardColor] = useState(cardColor)
+    const [checkUpdateAllow, setCheckUpdateAllow] = useState(false)
 
 
     const handleTitleChange = (e) => {
@@ -116,10 +113,12 @@ export default function TodoBook(props) {
                 }
                 props.setRequestUpdate(-1)
             })
+        setCheckUpdateAllow(true)
     }
 
     const handleUpdateCancelEvent = () => {
         props.setRequestUpdate(1)
+        setCheckUpdateAllow(true)
         setDisplayEditForm(false)
         setEditEnabled(false)
     }
@@ -143,7 +142,9 @@ export default function TodoBook(props) {
         setDisplayDeleteConfirm(true)
     }
 
+
     const changeEditCard = () => {
+        setCheckUpdateAllow(true)
         setRequestEditId(updateId)
         setEditEnabled(true)
         setDisplayEditForm(true)
@@ -162,55 +163,53 @@ export default function TodoBook(props) {
 
     const checkPropsUpdate = useCallback(() => {
         const updatePropsData = () => {
-            setCardColor(randomColor())
             setId(id)
             setTitle(title)
             setAuthor(author)
             setPrice(price)
-            setIsRead(isRead)
             setNationality(nationality)
             setURL(url)
             setDueDate(dueDate)
-            setLastModifyDate(lastModifyDate)
-            setCreatedAt(createdAt)
-            setDaysSinceCreated(daysSinceCreated)
+            // setDaysSinceCreated(daysSinceCreated)
+            setCheckUpdateAllow(false)
         }
-        updatePropsData()
-        if (currentWindowSize.x < 1000) {
-            setCardWidth('24rem')
-            setCardMinHeight('43vh')
-        } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
-            
-            setCardWidth('28rem')
-            setCardMinHeight('43vh')
-        } else {
-            setCardWidth('28rem')
-            setCardMinHeight('35vh')
+        if (checkUpdateAllow) {
+            updatePropsData()
         }
-    }, [
-        author,
-        createdAt,
-        currentWindowSize,
-        daysSinceCreated,
-        dueDate,
-        id,
-        isRead,
-        lastModifyDate,
-        nationality,
-        price,
-        title,
-        url,
-    ])
+    // }, [author, checkUpdateAllow, daysSinceCreated, dueDate, id, nationality, price, title, url])
+    }, [author, checkUpdateAllow, dueDate, id, nationality, price, title, url])
+
+    const updateWindowSize = useCallback(() => {
+        if (lastTimeWindowSize.x !== currentWindowSize.x) {
+            if (currentWindowSize.x < 1000) {
+                setCardWidth('24rem')
+                setCardMinHeight('43vh')
+            } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
+                // setCardWidth('28rem')
+                setCardWidth('33rem')
+                setCardMinHeight('43vh')
+            } else {
+                // setCardWidth('28rem')
+                setCardWidth('40rem')
+                // setCardMinHeight('35vh')
+                setCardMinHeight('33vh')
+            }
+            setLastTimeWindowSize(currentWindowSize)
+            // setRenderCardColor(cardColor) // 當偵測到視窗尺寸有變化時，則會重新渲染卡片的顏色
+        }
+    // }, [cardColor, currentWindowSize, lastTimeWindowSize])
+    }, [currentWindowSize, lastTimeWindowSize.x])
 
     useEffect(() => {
         checkPropsUpdate()
-    }, [checkPropsUpdate])
+        updateWindowSize()
+    }, [checkPropsUpdate, updateWindowSize])
 
     return (
         <div>
             <div>
                 <Modal show={displayDeleteConfirm} backdrop="static" keyboard={false}>
-                    <Modal.Header style={{ background: cardColor, color: 'white' }}>
+                    <Modal.Header style={{ background: renderCardColor, color: 'white' }}>
                         <Modal.Title>
                             <p>Confirm action delete</p>
                         </Modal.Title>
@@ -218,7 +217,7 @@ export default function TodoBook(props) {
                     <Modal.Body>
                         Are you sure you want to delete this item <span style={{ fontWeight: 'bold' }}> {title}</span> ?
                     </Modal.Body>
-                    <Modal.Footer style={{ borderColor: cardColor }}>
+                    <Modal.Footer style={{ borderColor: renderCardColor }}>
                         <Button variant="primary" onClick={handleDeleteItemEvent}>
                             Yes
                         </Button>
@@ -233,11 +232,11 @@ export default function TodoBook(props) {
                     <div>
                         {displayEditForm ? (
                             <div className="book-todo-root-1">
-                                <Card style={{ borderColor: cardColor, width: cardWidth }}>
+                                <Card style={{ borderColor: renderCardColor, width: cardWidth }}>
                                     <Card.Header
                                         variant="primary"
                                         className="book-todo-card-header"
-                                        style={{ background: cardColor }}
+                                        style={{ background: renderCardColor }}
                                     >
                                         Edit {title}
                                     </Card.Header>
@@ -333,23 +332,23 @@ export default function TodoBook(props) {
                     </div>
                 ) : (
                     <div className="book-todo-root-1" style={{ minHeight: cardMinHeight }}>
-                        <Card style={{ borderColor: cardColor, width: cardWidth }}>
+                        <Card style={{ borderColor: renderCardColor, width: cardWidth }}>
                             <Card.Header
                                 variant="primary"
                                 className="book-todo-card-header"
-                                style={{ background: cardColor }}
+                                style={{ background: renderCardColor }}
                             >
-                                {updateTitle}
+                                {title}
                             </Card.Header>
                             <Card.Body>
-                                <Card.Title>Due Date: {updateDueDate}</Card.Title>
+                                <Card.Title>Due Date: {dueDate}</Card.Title>
                                 <Card.Text as="div" style={{ fontSize: '17px' }}>
-                                    Created At: {readCreatedAt}
+                                    Created At: {createdAt}
                                     <br />
-                                    {updateNationality} - {updateAuthor} - US${updatePrice} -{' '}
-                                    <a href={updateUrl}>Link</a>
+                                    {nationality} - {author} - US${price} -{' '}
+                                    <a href={url}>Link</a>
                                     <br />
-                                    {updateIsRead ? 'Read' : 'Unread'}
+                                    {isRead ? 'Read' : 'Unread'}
                                     <br />
                                 </Card.Text>
 
@@ -369,8 +368,8 @@ export default function TodoBook(props) {
                                     </Button>
                                 </div>
                             </Card.Body>
-                            <Card.Footer style={{ borderColor: cardColor }}>
-                                <div style={{ fontWeight: 'bold' }}>Last Modified: {readLastModifyDate}</div>
+                            <Card.Footer style={{ borderColor: renderCardColor }}>
+                                <div style={{ fontWeight: 'bold' }}>Last Modified: {lastModifyDate}</div>
                             </Card.Footer>
                         </Card>
                     </div>
