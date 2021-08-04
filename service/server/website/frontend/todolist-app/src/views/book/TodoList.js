@@ -38,7 +38,7 @@ export default function TodoBook(props) {
     const [titleFailedMsg, setTitleFailedMsg] = useState('')
     const [urlFailedMsg, setUrlFailedMsg] = useState('')
     const [cardWidth, setCardWidth] = useState('33rem')
-    const [cardMinHeight, setCardMinHeight] = useState('43vh')
+    const [cardMinHeight, setCardMinHeight] = useState('45vh')
     const [lastTimeWindowSize, setLastTimeWindowSize] = useState({
         x: 0,
         y: 0,
@@ -185,8 +185,9 @@ export default function TodoBook(props) {
     const updateWindowSize = useCallback(() => {
         if (lastTimeWindowSize.x !== currentWindowSize.x) {
             if (currentWindowSize.x < 1000) {
-                setCardWidth('24rem')
-                setCardMinHeight('43vh')
+                // setCardWidth('24rem')
+                setCardWidth('23rem')
+                setCardMinHeight('45vh')
             } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
                 // setCardWidth('28rem')
                 setCardWidth('33rem')

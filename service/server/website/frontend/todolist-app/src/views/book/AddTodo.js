@@ -69,7 +69,7 @@ export default function AddTodo(props) {
         setUrlFailedMsg('')
     }
 
-    const addTodoRequest = () => {
+    const addTodoRequest = async () => {
         clearErrorMsg()
         let data = {
             title: title,
@@ -80,7 +80,7 @@ export default function AddTodo(props) {
             url: url,
             due_date: dueDate,
         }
-        apiAddBookTodo(data)
+         await apiAddBookTodo(data)
             .then((res) => {
                 if (res.data['is_writed']) {
                     clearForm()

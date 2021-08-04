@@ -36,8 +36,8 @@ export default function TodoBook(props) {
     }
 
     const initPageData = useCallback(() => {
-        const fetchTodoList = () => {
-            apiFetchBookTodo(orderBy, false)
+        const fetchTodoList = async () => {
+            await apiFetchBookTodo(orderBy, false)
                 .then((res) => {
                     const data = res.data.info
                     setTodoListData(data)

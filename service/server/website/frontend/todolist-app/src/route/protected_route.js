@@ -23,7 +23,7 @@ export default function ProtectedRoutes(props) {
                 route = (
                     <Route
                         path={prop.path_prefix + prop.path}
-                        render={(props) => <prop.component />}
+                        render={(props) => <prop.component {...props} />}
                         key={index}
                     />
                 )

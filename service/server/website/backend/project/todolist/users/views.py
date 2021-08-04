@@ -1,4 +1,3 @@
-# from django.utils.translation import activate
 from rest_framework.exceptions import ValidationError
 from .serializers import LoginTokenObtainSerializer, RefreshTokenObtainSerializer, \
                         IdUsernameSerializer, UsernameSerializer, UserIdSerializer, \
@@ -52,13 +51,13 @@ class UserViewset(viewsets.ModelViewSet):
             return Response(res_msg, status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request):
-        data = request.data
         try:
+            data = request.data
             email = data.get('email', None)
             username = data.get('username', None)
             password = data.get('password', None)
 
-            if not username or not email:
+            if username is None or email is None:
                 raise Exception("username and email doesn't empty")
 
             duplicate_check = self.viewset_func.checkUserOrEmailIsDuplicate(
@@ -285,36 +284,6 @@ class UserViewset(viewsets.ModelViewSet):
                 "token_time_left": token_time_left
             }
             return Response(err_msg, status=status.HTTP_400_BAD_REQUEST)
-
-    # @action(methods=['GET'], detail=False, url_path='token-expire-check')
-    # def token_expire_check(self, request):
-    #     try:
-    #         token = request.headers.get('Authorization').split(' ')[1]
-    #         protect_auth = GenerateProtectAuthToken(salt='auth token')
-    #         raw_access_token = protect_auth.descrypt_payload(token)
-    #         valid_data = TokenBackend(algorithm='HS256').decode(raw_access_token, verify=False)
-    #         expires_in_timestamp = valid_data['exp']
-    #         expires_in_datetime = DT.convert_timestamp_to_datetime(expires_in_timestamp)
-    #         now_datetime = DT.get_current_datetime()
-    #         token_time_left = (expires_in_datetime - now_datetime).total_seconds()
-    #         check_logged_in = cache.get(valid_data['user'], False)
-    #         if token_time_left < 1 or check_logged_in is False:
-    #             raise Exception('token has been expire')
-    #         res_msg = {
-    #             'message': 'token valid',
-    #             'is_valid': True,
-    #             # 'exp': expires_in_timestamp,
-    #             # "exp_datetime": expires_in_datetime,
-    #             # "now_datetime": now_datetime,
-    #             "token_time_left": int(token_time_left)
-    #         }
-    #         return Response(res_msg, status=status.HTTP_200_OK)
-    #     except Exception as e:
-    #         err_msg = {
-    #             "error": e.args[0],
-    #             "is_invalid": False
-    #         }
-    #     return Response(err_msg, status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['GET','POST'], detail=False, url_path='profile')
     def obtain_user_profile(self, request, *args, **kwargs):

@@ -17,7 +17,7 @@ export default function AuthRoutes() {
                 route = (
                     <Route
                         path={prop.path_prefix + prop.path}
-                        render={(props) => <prop.component currentWindowSize={getCurrentWindowSize()} />}
+                        render={(props) => <prop.component {...props} currentWindowSize={getCurrentWindowSize()} />}
                         key={index}
                     />
                 )

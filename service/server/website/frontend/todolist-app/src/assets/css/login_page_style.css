@@ -4,8 +4,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgb(39, 85, 172);
-    display: grid;
+    /* background-color: rgb(39, 85, 172); */
+    background-image: url("../img/photo-1542176107-f50284e217c5.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .card-mt-1 {

@@ -2,19 +2,6 @@ from itsdangerous.url_safe import URLSafeSerializer
 from itsdangerous import TimedJSONWebSignatureSerializer
 from django.conf import settings
 
-# class GenerateSerializerToken():
-#     def __init__(self, salt, expires_in):
-#         self.__salt = salt
-#         self.__expires_in = expires_in
-
-#     def __enter__(self):
-#         outside_serializer = TimedJSONWebSignatureSerializer(settings.SECRET_KEY, expires_in=self.__expires_in, salt=self.__salt)
-#         inside_serializer = URLSafeSerializer(settings.SECRET_KEY, salt=self.__salt)
-#         return {'s1': outside_serializer, 's2': inside_serializer}
-
-#     def __exit__(self, exc_type, exc_value, trace):
-#         pass
-
 class GenerateSerializerToken():
     def __init__(self, salt='', expires_in=60):
         self.__salt = salt

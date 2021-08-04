@@ -27,7 +27,7 @@ export default function LoginPage(props) {
         return username.length === 0 || password.length === 0
     }
 
-    const handleLoginSubmit = () => {
+    const handleLoginSubmit = (e) => {
         setErrorMessage('')
         let data = JSON.stringify({
             username: username,
