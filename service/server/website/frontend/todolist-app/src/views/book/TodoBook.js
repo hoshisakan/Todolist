@@ -106,6 +106,8 @@ export default function TodoBook(props) {
                                 // daysSinceCreated={task.days_since_created}
                                 lastModifyDate={convertToLocalDate(task.last_modify_date)}
                                 createdAt={convertToLocalDate(task.created_at)}
+                                dueDays={task.due_days}
+                                willDueDays={task.will_due_days}
                                 hideTodoListItem={false}
                                 editEnabled={false}
                                 setRequestUpdate={setUpdateData}

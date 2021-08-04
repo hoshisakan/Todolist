@@ -3,7 +3,8 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from .models import BookList
 from rest_framework.parsers import JSONParser
-from .serializers import AddBookTodoSerializer, RetrieveBookTodoSerializer, UpdateBookTodoSerializer, UpdateBookTodoIsReadSerializer
+from .serializers import AddBookTodoSerializer, RetrieveBookTodoSerializer, UpdateBookTodoSerializer, \
+                        UpdateBookTodoIsReadSerializer, RetrieveUnDoneBookTodoSerializer, RetrieveCompletedBookTodoSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .views_func import BookListViewsFunc
@@ -24,7 +25,7 @@ class BookListViewset(viewsets.ModelViewSet):
             order_by = request.query_params.get('order_by', None)
             filter_type = True if is_checked == 'true' else False
             queryset = self.viewset_func.retrieveUserDataOrderBy(request.user, order_by, bool(filter_type))
-            serializer = self.serializer_class(queryset, many=True)
+            serializer = RetrieveUnDoneBookTodoSerializer(queryset, many=True) if filter_type is False else RetrieveCompletedBookTodoSerializer(queryset, many=True)
             data = serializer.data
             res_msg = {
                 "info": data

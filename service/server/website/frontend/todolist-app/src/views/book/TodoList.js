@@ -5,6 +5,7 @@ import { apiDeleteBookTodo, apiEditBookTodo, apiCheckBookTodo } from '../../api.
 
 export default function TodoBook(props) {
     const {
+        setRequestUpdate,
         id,
         title,
         author,
@@ -16,6 +17,8 @@ export default function TodoBook(props) {
         // daysSinceCreated,
         lastModifyDate,
         createdAt,
+        dueDays,
+        willDueDays,
         currentWindowSize,
         cardColor
     } = props
@@ -86,7 +89,7 @@ export default function TodoBook(props) {
         await apiEditBookTodo(id, data)
             .then((res) => {
                 if (res.data['is_updated']) {
-                    props.setRequestUpdate(1)
+                    setRequestUpdate(1)
                     setDisplayEditForm(false)
                     setEditEnabled(false)
                 }
@@ -111,13 +114,13 @@ export default function TodoBook(props) {
                         setShowUrlFailedMsg(true)
                     }
                 }
-                props.setRequestUpdate(-1)
+                setRequestUpdate(-1)
             })
         setCheckUpdateAllow(true)
     }
 
     const handleUpdateCancelEvent = () => {
-        props.setRequestUpdate(1)
+        setRequestUpdate(1)
         setCheckUpdateAllow(true)
         setDisplayEditForm(false)
         setEditEnabled(false)
@@ -126,11 +129,11 @@ export default function TodoBook(props) {
     const handleDeleteItemEvent = async () => {
         await apiDeleteBookTodo(id)
             .then((res) => {
-                props.setRequestUpdate(1)
+                setRequestUpdate(1)
             })
             .catch((err) => {
                 // console.error(err)
-                props.setRequestUpdate(-1)
+                setRequestUpdate(-1)
             })
     }
 
@@ -153,11 +156,11 @@ export default function TodoBook(props) {
     const checkTodoCard = async () => {
         await apiCheckBookTodo(id, true)
             .then((res) => {
-                props.setRequestUpdate(1)
+                setRequestUpdate(1)
             })
             .catch((err) => {
                 // console.error(err)
-                props.setRequestUpdate(-1)
+                setRequestUpdate(-1)
             })
     }
 
@@ -341,12 +344,14 @@ export default function TodoBook(props) {
                                 {title}
                             </Card.Header>
                             <Card.Body>
-                                <Card.Title>Due Date: {dueDate}</Card.Title>
+                                <Card.Title>
+                                { dueDays > 0 ? (<p>Due Date: {dueDate} ( Due {dueDays} days )</p>) : <p>Due Date: {dueDate} ( Will due {willDueDays} days )</p> }
+                                    
+                                </Card.Title>
                                 <Card.Text as="div" style={{ fontSize: '17px' }}>
                                     Created At: {createdAt}
                                     <br />
-                                    {nationality} - {author} - US${price} -{' '}
-                                    <a href={url}>Link</a>
+                                    {nationality} - {author} - US${price} - <a href={url}>Link</a>
                                     <br />
                                     {isRead ? 'Read' : 'Unread'}
                                     <br />

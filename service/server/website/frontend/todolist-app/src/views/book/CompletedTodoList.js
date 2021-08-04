@@ -5,6 +5,7 @@ import { apiCheckBookTodo } from '../../api.js'
 
 export default function TodoBook(props) {
     const {
+        setRequestUpdate,
         id,
         title,
         author,
@@ -15,6 +16,7 @@ export default function TodoBook(props) {
         dueDate,
         // daysSinceCreated,
         lastModifyDate,
+        dueDays,
         createdAt,
         currentWindowSize,
         cardColor,
@@ -28,14 +30,13 @@ export default function TodoBook(props) {
     const [renderCardColor] = useState(cardColor)
 
     const revokeCompeltedItem = async () => {
-        // alert(id)
         await apiCheckBookTodo(id, false)
             .then((res) => {
-                props.setRequestUpdate(1)
+                setRequestUpdate(1)
             })
             .catch((err) => {
                 // console.error(err)
-                props.setRequestUpdate(-1)
+                setRequestUpdate(-1)
             })
     }
 
@@ -72,7 +73,9 @@ export default function TodoBook(props) {
                         {title}
                     </Card.Header>
                     <Card.Body>
-                        <Card.Title>Due Date: {dueDate}</Card.Title>
+                        <Card.Title>
+                        { dueDays > 0 ? (<p>Due date {dueDate} ( Due {dueDays} days )</p>) : <p>Not overdue</p> }
+                        </Card.Title>
                         <Card.Text as="div" style={{ fontSize: '17px' }}>
                             Created At: {createdAt}
                             <br />
@@ -88,7 +91,7 @@ export default function TodoBook(props) {
                         </div>
                     </Card.Body>
                     <Card.Footer style={{ borderColor: renderCardColor }}>
-                        <div style={{ fontWeight: 'bold' }}>Last Modified: {lastModifyDate}</div>
+                        <div style={{ fontWeight: 'bold' }}>Completed time: {lastModifyDate}</div>
                     </Card.Footer>
                 </Card>
             </div>

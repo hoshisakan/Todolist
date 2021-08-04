@@ -4,7 +4,6 @@ import { apiAddBookTodo } from '../../api.js'
 import { Button, Card, Form, Row, Col } from 'react-bootstrap'
 
 export default function AddTodo(props) {
-    // eslint-disable-next-line no-unused-vars
     const { setRequestUpdate, currentWindowSize, cardColor } = props
     const [title, setTitle] = useState('')
     const [author, setAuthor] = useState('')
@@ -85,7 +84,7 @@ export default function AddTodo(props) {
             .then((res) => {
                 if (res.data['is_writed']) {
                     clearForm()
-                    props.setRequestUpdate(1)
+                    setRequestUpdate(1)
                 }
             })
             .catch((err) => {
@@ -109,7 +108,7 @@ export default function AddTodo(props) {
                         setShowUrlFailedMsg(true)
                     }
                 }
-                // props.setRequestUpdate(-1)
+                // setRequestUpdate(-1)
             })
     }
 
@@ -119,7 +118,7 @@ export default function AddTodo(props) {
 
     const handleCancelEvent = () => {
         clearForm()
-        props.setRequestUpdate(0)
+        setRequestUpdate(0)
     }
 
     useEffect(() => {

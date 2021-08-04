@@ -13,8 +13,10 @@ class BookListViewsFunc():
             return self.__book.objects.filter(Q(user=current_user) & Q(is_read=is_checked)).order_by('-created_at')
         elif order_by == 'oldest_created_first':
             return self.__book.objects.filter(Q(user=current_user) & Q(is_read=is_checked)).order_by('created_at')
-        elif order_by == 'will_due_date_first':
+        elif order_by == 'due_date_first':
             return self.__book.objects.filter(Q(user=current_user) & Q(is_read=is_checked)).order_by('due_date')
+        elif order_by == 'will_due_date_first':
+            return self.__book.objects.filter(Q(user=current_user) & Q(is_read=is_checked)).order_by('-due_date')
         elif order_by == 'recent_last_modified_first':
             return self.__book.objects.filter(Q(user=current_user) & Q(is_read=is_checked)).order_by('-last_modify_date')
         elif order_by == 'oldest_last_modified_first':
