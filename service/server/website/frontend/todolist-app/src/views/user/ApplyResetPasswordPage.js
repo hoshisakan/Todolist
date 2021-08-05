@@ -43,11 +43,15 @@ export default function ApplyResetPasswordPage(props) {
             setCardBtnSpacing('4.2rem')
         } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
             setCardWidth('27rem')
-            setCardBtnSpacing('8.3rem')
-        } else {
+            setCardBtnSpacing('8.5rem')
+        } else if (currentWindowSize.x > 1600 && currentWindowSize.x < 1900) {
             setCardWidth('30rem')
             setCardBtnSpacing('10.6rem')
+        } else {
+            setCardWidth('30rem')
+            setCardBtnSpacing('11.2rem')
         }
+        // alert(currentWindowSize.x)
     }, [currentWindowSize])
 
     return (

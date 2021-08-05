@@ -20,6 +20,7 @@ export default function AddTodo(props) {
         y: 0,
     })
     const [cardWidth, setCardWidth] = useState('28rem')
+    const [cardMinHeight, setCardMinHeight] = useState('45vh')
     const [renderCardColor] = useState(cardColor)
 
     const handleTitleChange = (e) => {
@@ -124,10 +125,12 @@ export default function AddTodo(props) {
     useEffect(() => {
         if (lastTimeWindowSize.x !== currentWindowSize.x) {
             if (currentWindowSize.x < 1000) {
-                setCardWidth('24rem')
+                setCardWidth('23rem')
+                setCardMinHeight('55vh')
             } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
                 // setCardWidth('28rem')
                 setCardWidth('33em')
+                
             } else {
                 // setCardWidth('28rem')
                 setCardWidth('40rem')
@@ -140,7 +143,7 @@ export default function AddTodo(props) {
 
     return (
         <div>
-            <div className="book-todo-root-1">
+            <div className="book-todo-root-1" style={{ minHeight: cardMinHeight }}>
                 <Card style={{ borderColor: renderCardColor, width: cardWidth }}>
                     <Card.Header
                         variant="primary"

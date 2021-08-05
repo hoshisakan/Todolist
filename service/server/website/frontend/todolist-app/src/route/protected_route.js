@@ -13,6 +13,7 @@ export default function ProtectedRoutes(props) {
     const mainPanel = useRef(null)
     const [allowRender, setAllowRender] = useState(false)
     const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
     const [checkTokenExpireTime, setCheckTokenExpireTime] = useState(60000) // default check token epxire time 1 minutes
 
     const getRoutes = (routes) => {
@@ -20,13 +21,23 @@ export default function ProtectedRoutes(props) {
         let index = 0
         for (let prop of routes) {
             if (prop.path_prefix === '/user' && history.location.pathname === prop.path_prefix + prop.path) {
-                route = (
+                if (prop.path === '/profile') {
+                    route = (
+                    <Route
+                        path={prop.path_prefix + prop.path}
+                        render={(props) => <prop.component username={username} email={email} />}
+                        key={index}
+                    />
+                )
+                } else {
+                    route = (
                     <Route
                         path={prop.path_prefix + prop.path}
                         render={(props) => <prop.component {...props} />}
                         key={index}
                     />
                 )
+                }
                 // console.log('current route: ' + history.location.pathname)
                 break
             }
@@ -39,12 +50,13 @@ export default function ProtectedRoutes(props) {
     const checkUserAuth = useCallback(() => {
         // console.log('check user auth')
         const fetchUserProfile = async () => {
-            if (username.length < 1 || username === '') {
+            if (username.length < 1 || username === '' || email.length < 1 || email === '') {
                 // console.log('fetch update user profile')
                 await apiUpdateUserProfile()
                     .then((res) => {
                         let res_data = res.data.info
                         setUsername(res_data['user'])
+                        setEmail(res_data['email'])
                         // console.log('get user profile')
                     })
                     .catch((err) => {
@@ -87,7 +99,6 @@ export default function ProtectedRoutes(props) {
                 .then((res) => {
                     let data = res.data
                     let token_time_left = data['token_time_left']
-                    // console.log('token time left: ' + token_time_left)
                     if (token_time_left > 60) {
                         setCheckTokenExpireTime(60000)
                     } else if (token_time_left === 60) {
@@ -97,7 +108,6 @@ export default function ProtectedRoutes(props) {
                     } else if (token_time_left <= 30) {
                         refreshTokenRequest()
                     }
-                    // console.log('changed timer check token expired time: ' + checkTokenExpireTime)
                     setAllowRender(true)
                     fetchUserProfile()
                 })
@@ -106,20 +116,9 @@ export default function ProtectedRoutes(props) {
                 })
         }
         fetchUserAuth()
-    }, [history, username])
+    }, [email, history, username])
 
-    const requestRenderRoute = () => {
-        let route = getRoutes(UserRouter)
-        // alert('will be clicked')
-        if (window.performance) {
-            if (performance.navigation.type === 1) {
-                checkUserAuth()
-            }
-        }
-        return route
-    }
-
-    const renderRoute = requestRenderRoute()
+    const renderRoute = getRoutes(UserRouter)
 
     useInterval(() => {
         // console.log('will be check token expire')

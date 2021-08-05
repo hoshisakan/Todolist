@@ -265,11 +265,11 @@ class UserViewset(viewsets.ModelViewSet):
             username = decrypt_token['user']
             expires_in_timestamp = decrypt_token['exp']
             expires_in_datetime = DT.convert_timestamp_to_datetime(expires_in_timestamp)
-            print(expires_in_datetime)
+            # print(expires_in_datetime)
             now_datetime = DT.get_current_datetime()
-            print(now_datetime)
+            # print(now_datetime)
             token_time_left = int((expires_in_datetime - now_datetime).total_seconds())
-            print(token_time_left)
+            # print(token_time_left)
 
             if cache.get(username, False) is False:
                 raise Exception("Invalid token or expired or will expire")

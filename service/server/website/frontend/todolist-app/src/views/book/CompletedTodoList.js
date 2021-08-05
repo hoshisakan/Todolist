@@ -22,7 +22,7 @@ export default function TodoBook(props) {
         cardColor,
     } = props
     const [cardWidth, setCardWidth] = useState('33rem')
-    const [cardMinHeight, setCardMinHeight] = useState('43vh')
+    const [cardMinHeight, setCardMinHeight] = useState('45vh')
     const [lastTimeWindowSize, setLastTimeWindowSize] = useState({
         x: 0,
         y: 0,
@@ -43,17 +43,20 @@ export default function TodoBook(props) {
     useEffect(() => {
         if (lastTimeWindowSize.x !== currentWindowSize.x) {
             if (currentWindowSize.x < 1000) {
-                setCardWidth('24rem')
-                setCardMinHeight('43vh')
+                // setCardWidth('24rem')
+                setCardWidth('23rem')
+                setCardMinHeight('45vh')
             } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
                 // setCardWidth('28rem')
                 setCardWidth('33rem')
-                setCardMinHeight('43vh')
-            } else {
+                setCardMinHeight('42vh')
+            } else if (currentWindowSize.x > 1600 && currentWindowSize.x < 1900){
                 // setCardWidth('28rem')
                 setCardWidth('40rem')
+                setCardMinHeight('35vh')
+            } else {
+                setCardWidth('40rem')
                 setCardMinHeight('33vh')
-                // setCardMinHeight('35vh')
             }
             setLastTimeWindowSize(currentWindowSize)
             // setRenderCardColor(cardColor) // when detecting windows size changed, then re-render the card color
@@ -79,7 +82,7 @@ export default function TodoBook(props) {
                         <Card.Text as="div" style={{ fontSize: '17px' }}>
                             Created At: {createdAt}
                             <br />
-                            {nationality} - {author} - US${price} - <a href={url}>Link</a>
+                            {nationality} - {author} - {price} - <a href={url}>Link</a>
                             <br />
                             {isRead ? 'Read' : 'Unread'}
                             <br />

@@ -1,37 +1,26 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Card, Container } from 'react-bootstrap'
 import '../../assets/css/form_level_style.css'
-import { apiUpdateUserProfile } from '../../api.js'
+import useInterval from '../../components/Timer/useInterval'
+import { getCurrentWindowSize } from '../../assets/js/getWindowSize.js'
+
 
 export default function UserProfile(props) {
-    const currentWindowSize = props.currentWindowSize === undefined ? '28rem' : props.currentWindowSize
-    const [email, setEmail] = useState('')
-    const [username, setUsername] = useState('')
+    const { username, email } = props
+    const [currentWindowSize, setCurrentWindowSize] = useState(getCurrentWindowSize())
     const [cardWidth, setCardWidth] = useState('28rem')
 
-    const updateUserProfile = useCallback(() => {
-        const fetchUserProfile = async () => {
-            apiUpdateUserProfile()
-                .then((res) => {
-                    let res_data = res.data.info
-                    setUsername(res_data['user'])
-                    setEmail(res_data['email'])
-                })
-                .catch((err) => {
-                    console.error(err.response.data)
-                })
-        }
-        fetchUserProfile()
-    }, [])
+    useInterval(() => {
+        setCurrentWindowSize(getCurrentWindowSize())
+    }, 1000)
 
     useEffect(() => {
-        updateUserProfile()
         if (currentWindowSize.x < 1000) {
-            setCardWidth('24rem')
+            setCardWidth('22rem')
         } else if (currentWindowSize.x >= 1000) {
             setCardWidth('30rem')
         }
-    }, [updateUserProfile, currentWindowSize])
+    }, [currentWindowSize])
 
     return (
         <div>

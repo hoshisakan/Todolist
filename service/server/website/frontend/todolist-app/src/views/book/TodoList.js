@@ -20,7 +20,7 @@ export default function TodoBook(props) {
         dueDays,
         willDueDays,
         currentWindowSize,
-        cardColor
+        cardColor,
     } = props
     const [updateId, setId] = useState(id)
     const [updateTitle, setTitle] = useState(title)
@@ -38,14 +38,13 @@ export default function TodoBook(props) {
     const [titleFailedMsg, setTitleFailedMsg] = useState('')
     const [urlFailedMsg, setUrlFailedMsg] = useState('')
     const [cardWidth, setCardWidth] = useState('33rem')
-    const [cardMinHeight, setCardMinHeight] = useState('45vh')
+    const [cardMinHeight, setCardMinHeight] = useState('44vh')
     const [lastTimeWindowSize, setLastTimeWindowSize] = useState({
         x: 0,
         y: 0,
     })
     const [renderCardColor] = useState(cardColor)
     const [checkUpdateAllow, setCheckUpdateAllow] = useState(false)
-
 
     const handleTitleChange = (e) => {
         setTitle(e.target.value)
@@ -145,7 +144,6 @@ export default function TodoBook(props) {
         setDisplayDeleteConfirm(true)
     }
 
-
     const changeEditCard = () => {
         setCheckUpdateAllow(true)
         setRequestEditId(updateId)
@@ -179,7 +177,7 @@ export default function TodoBook(props) {
         if (checkUpdateAllow) {
             updatePropsData()
         }
-    // }, [author, checkUpdateAllow, daysSinceCreated, dueDate, id, nationality, price, title, url])
+        // }, [author, checkUpdateAllow, daysSinceCreated, dueDate, id, nationality, price, title, url])
     }, [author, checkUpdateAllow, dueDate, id, nationality, price, title, url])
 
     const updateWindowSize = useCallback(() => {
@@ -187,21 +185,23 @@ export default function TodoBook(props) {
             if (currentWindowSize.x < 1000) {
                 // setCardWidth('24rem')
                 setCardWidth('23rem')
-                setCardMinHeight('45vh')
+                setCardMinHeight('44vh')
             } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
                 // setCardWidth('28rem')
                 setCardWidth('33rem')
-                setCardMinHeight('43vh')
-            } else {
+                setCardMinHeight('42vh')
+            } else if (currentWindowSize.x > 1600 && currentWindowSize.x < 1900){
                 // setCardWidth('28rem')
                 setCardWidth('40rem')
-                // setCardMinHeight('35vh')
+                setCardMinHeight('35vh')
+            } else {
+                setCardWidth('40rem')
                 setCardMinHeight('33vh')
             }
             setLastTimeWindowSize(currentWindowSize)
             // setRenderCardColor(cardColor) // 當偵測到視窗尺寸有變化時，則會重新渲染卡片的顏色
         }
-    // }, [cardColor, currentWindowSize, lastTimeWindowSize])
+        // }, [cardColor, currentWindowSize, lastTimeWindowSize])
     }, [currentWindowSize, lastTimeWindowSize.x])
 
     useEffect(() => {
@@ -346,13 +346,20 @@ export default function TodoBook(props) {
                             </Card.Header>
                             <Card.Body>
                                 <Card.Title>
-                                { dueDays > 0 ? (<p>Due Date: {dueDate} ( Due {dueDays} days )</p>) : <p>Due Date: {dueDate} ( Will due {willDueDays} days )</p> }
-                                    
+                                    {dueDays > 0 ? (
+                                        <p>
+                                            Due Date: {dueDate} ( Due {dueDays} days )
+                                        </p>
+                                    ) : (
+                                        <p>
+                                            Due Date: {dueDate} ( Will due {willDueDays} days )
+                                        </p>
+                                    )}
                                 </Card.Title>
                                 <Card.Text as="div" style={{ fontSize: '17px' }}>
                                     Created At: {createdAt}
                                     <br />
-                                    {nationality} - {author} - US${price} - <a href={url}>Link</a>
+                                    {nationality} - {author} - {price} - <a href={url}>Link</a>
                                     <br />
                                     {isRead ? 'Read' : 'Unread'}
                                     <br />

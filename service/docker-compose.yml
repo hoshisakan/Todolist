@@ -22,7 +22,7 @@ services:
         ports:
             - 80:80
             - 443:443
-            - 9001:9001
+            - 127.0.0.1:9001:9001
             # - 9001:9001
         env_file:
             - ./.env
@@ -32,8 +32,8 @@ services:
             - ./server/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
             - ./server/conf/nginx/conf.d:/etc/nginx/conf.d
             - ./server/logs/nginx/:/var/log/nginx
-            # - ./server/website/certs/ssl/:/etc/nginx/ssl
-            # - ./server/website/certs/data/:/usr/share/nginx/html/letsencrypt/
+            - ./server/website/certs/ssl/:/etc/nginx/ssl
+            - ./server/website/certs/data/.well-known/pki-validation/:/usr/share/nginx/html/letsencrypt/
         depends_on:
             - mysql
             - django
@@ -108,7 +108,7 @@ services:
         image: phpmyadmin/phpmyadmin
         container_name: dev_phpMyAdmin
         ports:
-            - 8080:80
+            - 127.0.0.1:8080:80
         env_file:
             - ./.env
         environment:
