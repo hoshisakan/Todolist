@@ -54,10 +54,14 @@ export default function LoginPage(props) {
         if (currentWindowSize.x < 1000) {
             setCardWidth('23rem')
             setCardBtnSpacing('4.5rem')
-        } else if (currentWindowSize.x >= 1000) {
+        } else if (currentWindowSize.x >= 1000 && currentWindowSize.x <= 1600) {
             setCardWidth('30rem')
             setCardBtnSpacing('12.0rem')
+        } else {
+            setCardWidth('30rem')
+            setCardBtnSpacing('11.5rem')
         }
+        // alert(currentWindowSize.x)
     }, [currentWindowSize])
 
     return (

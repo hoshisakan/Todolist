@@ -46,7 +46,7 @@ export default function ApplyResetPasswordPage(props) {
             setCardBtnSpacing('8.3rem')
         } else {
             setCardWidth('30rem')
-            setCardBtnSpacing('11.3rem')
+            setCardBtnSpacing('10.6rem')
         }
     }, [currentWindowSize])
 
