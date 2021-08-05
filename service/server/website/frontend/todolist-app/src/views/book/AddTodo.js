@@ -88,7 +88,7 @@ export default function AddTodo(props) {
                 }
             })
             .catch((err) => {
-                // console.error(err)
+                console.error(err)
                 let error_status_code = err.response.status
                 let error_msg = err.response.data.error
                 // console.error(error_status_code, error_msg)
@@ -102,7 +102,7 @@ export default function AddTodo(props) {
                         setTitleFailedMsg('The title has been exists')
                         setShowTitleFaildMsg(true)
                         setShowUrlFailedMsg(false)
-                    } else {
+                    } else if (error_msg['is_title_exists'] === false && error_msg['is_url_exists']) {
                         setUrlFailedMsg('The url has been exists')
                         setShowTitleFaildMsg(false)
                         setShowUrlFailedMsg(true)

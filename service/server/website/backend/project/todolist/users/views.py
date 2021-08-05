@@ -201,6 +201,10 @@ class UserViewset(viewsets.ModelViewSet):
         except TokenError as tr:
             raise InvalidToken(tr.args[0])
         except Exception as e:
+            print({
+                "error": e.args[0],
+                "detail": "user login failed."
+            })
             return Response({
                 "error": e.args[0],
                 "detail": "user login failed."

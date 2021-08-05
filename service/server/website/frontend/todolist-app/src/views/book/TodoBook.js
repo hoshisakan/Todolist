@@ -45,7 +45,7 @@ export default function TodoBook(props) {
                 })
                 .catch((err) => {
                     setUpdateData(-1)
-                    window.location.reload()
+                    // window.location.reload()
                 })
         }
         if (updateData > 0) {
