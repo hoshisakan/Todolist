@@ -6,3 +6,7 @@ export const orderByDropdownOptions = [
     {'id': 5, 'value': 'recent_last_modified_first'},
     {'id': 6, 'value': 'oldest_last_modified_first'}
 ]
+
+export const exportTodoListOptions = [
+    {'id': 1, 'value': 'csv'}
+]

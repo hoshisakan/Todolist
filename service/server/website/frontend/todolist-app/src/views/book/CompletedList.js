@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { ButtonGroup, Dropdown, DropdownButton, Container } from 'react-bootstrap'
 import '../../assets/css/form_level_style.css'
-import { apiFetchBookTodo } from '../../api.js'
+import { apiFetchBookTodo, apiExportBookTodo } from '../../api.js'
 import CompletedTodoList from './CompletedTodoList'
-import { orderByDropdownOptions } from './dropdown_options'
-import { convertToLocalDate } from '../../components/Timer/dateFormat'
+import { orderByDropdownOptions, exportTodoListOptions } from './dropdown_options'
+import { convertToLocalDateTime } from '../../components/Timer/dateFormat'
 import useInterval from '../../components/Timer/useInterval'
 import { getCurrentWindowSize } from '../../assets/js/getWindowSize.js'
 import { randomColor } from '../../components/Cards/color'
+import { exportTodoList } from '../../assets/js/exportFile.js'
 
 
 export default function CompleteList(props) {
@@ -18,15 +19,30 @@ export default function CompleteList(props) {
         sessionStorage.getItem('book_todo_sort') === undefined || sessionStorage.getItem('book_todo_sort') === null
             ? 'latest_created_first'
             : sessionStorage.getItem('book_todo_sort')
-
+    const [exportOption, setExportOption] = useState('csv')
     const setBookTodoSort = (value) => {
         sessionStorage.setItem('book_todo_sort', value)
     }
 
     const handleOrderByChange = (eventKey, event) => {
-        let orderBy = orderByDropdownOptions[eventKey].value
-        setBookTodoSort(orderBy)
+        setBookTodoSort(orderByDropdownOptions[eventKey].value)
         setUpdateData(1)
+    }
+
+    const handleExportCSV = async () => {
+        apiExportBookTodo(true, orderBy, exportOption)
+            .then((res) => {
+                const data = res.data
+                exportTodoList(data, 'book_completed_todolist')
+            })
+            .catch((err) => {
+                // console.error(err.response)
+            })
+    }
+
+    const handleExportOptionChange = (eventKey, event) => {
+        setExportOption(exportTodoListOptions[eventKey].value)
+        handleExportCSV()
     }
 
     const initPageData = useCallback(() => {
@@ -78,6 +94,31 @@ export default function CompleteList(props) {
                         )
                     })}
                 </DropdownButton>
+                <DropdownButton
+                    variant="light"
+                    className="book-todo-btn-0"
+                    as={ButtonGroup}
+                    title="Export"
+                    id="bg-nested-order-by-dropdown"
+                    onSelect={handleExportOptionChange}
+                >
+                    {exportTodoListOptions.map((options, index) => {
+                        return (
+                            <Dropdown.Item key={options.id} eventKey={index}>
+                                <span style={{ fontSize: '18px' }}>{options.value}</span>
+                            </Dropdown.Item>
+                        )
+                        // return options.value === exportOption ? (
+                        //     <Dropdown.Item key={options.id} eventKey={index} active>
+                        //         <span style={{ fontSize: '18px' }}>{options.value}</span>
+                        //     </Dropdown.Item>
+                        // ) : (
+                        //     <Dropdown.Item key={options.id} eventKey={index}>
+                        //         <span style={{ fontSize: '18px' }}>{options.value}</span>
+                        //     </Dropdown.Item>
+                        // )
+                    })}
+                </DropdownButton>
                 {todoListData.map((task) => {
                     return (
                         <div key={task.id}>
@@ -91,8 +132,8 @@ export default function CompleteList(props) {
                                 dueDate={task.due_date}
                                 isRead={task.is_read}
                                 // daysSinceCreated={task.days_since_created}
-                                lastModifyDate={convertToLocalDate(task.last_modify_date)}
-                                createdAt={convertToLocalDate(task.created_at)}
+                                lastCompletedDate={convertToLocalDateTime(task.last_modify_date)}
+                                createdAt={convertToLocalDateTime(task.created_at)}
                                 dueDays={task.due_days}
                                 hideTodoListItem={false}
                                 editEnabled={false}

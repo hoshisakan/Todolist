@@ -41,9 +41,9 @@ class RetrieveUnDoneBookTodoSerializer(serializers.ModelSerializer):
         return due_days
 
     def get_will_due_days(self, obj):
-        obtain_due_days = (obj.due_date - localtime(now()).date()).days
-        due_days = 0 if obtain_due_days < 1 else obtain_due_days
-        return due_days
+        obtain_will_due_days = (obj.due_date - localtime(now()).date()).days
+        will_due_days = 0 if obtain_will_due_days < 1 else obtain_will_due_days
+        return will_due_days
 
 class RetrieveCompletedBookTodoSerializer(serializers.ModelSerializer):
     days_since_created = serializers.SerializerMethodField()
@@ -60,7 +60,6 @@ class RetrieveCompletedBookTodoSerializer(serializers.ModelSerializer):
         obtain_due_days = (localtime(now()).date() - obj.due_date).days
         due_days = 0 if obtain_due_days < 1 else obtain_due_days
         return due_days
-
 
 class AddBookTodoSerializer(serializers.ModelSerializer):
     days_since_created = serializers.SerializerMethodField()
@@ -87,3 +86,41 @@ class UpdateBookTodoIsReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookList
         fields = ['user', 'is_read']
+
+class ExportUnDoneBookTodoSerializer(serializers.ModelSerializer):
+    is_read = serializers.SerializerMethodField()
+    due_days = serializers.SerializerMethodField()
+    will_due_days = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BookList
+        fields = ['title', 'author', 'price', 'nationality', 'url', 'due_date', 'is_read', 'last_modify_date', 'created_at', 'due_days', 'will_due_days']
+
+    def get_is_read(self, obj):
+        return 'Unread' if obj.is_read is False else 'Read'
+
+    def get_due_days(self, obj):
+        obtain_due_days = (localtime(now()).date() - obj.due_date).days
+        due_days = 0 if obtain_due_days < 1 else obtain_due_days
+        return due_days
+
+    def get_will_due_days(self, obj):
+        obtain_will_due_days = (obj.due_date - localtime(now()).date()).days
+        will_due_days = 0 if obtain_will_due_days < 1 else obtain_will_due_days
+        return will_due_days
+
+class ExportCompletedBookTodoSerializer(serializers.ModelSerializer):
+    is_read = serializers.SerializerMethodField()
+    due_days = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BookList
+        fields = ['title', 'author', 'price', 'nationality', 'url', 'due_date', 'is_read' , 'last_modify_date', 'created_at', 'due_days']
+
+    def get_is_read(self, obj):
+        return 'Unread' if obj.is_read is False else 'Read'
+
+    def get_due_days(self, obj):
+        obtain_due_days = (localtime(now()).date() - obj.due_date).days
+        due_days = 0 if obtain_due_days < 1 else obtain_due_days
+        return due_days

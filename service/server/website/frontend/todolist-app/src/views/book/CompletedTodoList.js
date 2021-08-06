@@ -15,7 +15,7 @@ export default function TodoBook(props) {
         url,
         dueDate,
         // daysSinceCreated,
-        lastModifyDate,
+        lastCompletedDate,
         dueDays,
         createdAt,
         currentWindowSize,
@@ -94,7 +94,7 @@ export default function TodoBook(props) {
                         </div>
                     </Card.Body>
                     <Card.Footer style={{ borderColor: renderCardColor }}>
-                        <div style={{ fontWeight: 'bold' }}>Completed time: {lastModifyDate}</div>
+                        <div style={{ fontWeight: 'bold' }}>Completed date: {lastCompletedDate}</div>
                     </Card.Footer>
                 </Card>
             </div>

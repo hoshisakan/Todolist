@@ -9,9 +9,7 @@ class BookListViewsFunc():
         return self.__book.objects.filter(user=current_user)
 
     def retrieveUserDataOrderBy(self, current_user, order_by, is_checked=False):
-        if order_by == 'latest_created_first' or order_by is None:
-            return self.__book.objects.filter(Q(user=current_user) & Q(is_read=is_checked)).order_by('-created_at')
-        elif order_by == 'oldest_created_first':
+        if order_by == 'oldest_created_first':
             return self.__book.objects.filter(Q(user=current_user) & Q(is_read=is_checked)).order_by('created_at')
         elif order_by == 'due_date_first':
             return self.__book.objects.filter(Q(user=current_user) & Q(is_read=is_checked)).order_by('due_date')
@@ -21,6 +19,8 @@ class BookListViewsFunc():
             return self.__book.objects.filter(Q(user=current_user) & Q(is_read=is_checked)).order_by('-last_modify_date')
         elif order_by == 'oldest_last_modified_first':
             return self.__book.objects.filter(Q(user=current_user) & Q(is_read=is_checked)).order_by('last_modify_date')
+        else:
+            return self.__book.objects.filter(Q(user=current_user) & Q(is_read=is_checked)).order_by('-created_at')
 
     def checkUserIsExists(self, current_user):
         return self.__book.objects.filter(user=current_user).exists()

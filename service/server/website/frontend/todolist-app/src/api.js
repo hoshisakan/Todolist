@@ -6,8 +6,8 @@ const apiAccountRequest = axios.create({
     baseURL: 'https://todolist.serveirc.com/api/users',
     headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
+        Accept: 'application/json',
+    },
 })
 
 const apiBookTodoRequest = axios.create({
@@ -16,15 +16,13 @@ const apiBookTodoRequest = axios.create({
     baseURL: 'https://todolist.serveirc.com/api/book',
     headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
+        Accept: 'application/json',
+    },
 })
 
-export const apiUserLogin = (data) =>
-    apiAccountRequest.post('/sign-in', data)
+export const apiUserLogin = (data) => apiAccountRequest.post('/sign-in', data)
 
-export const apiRefreshToken = (data) =>
-    apiAccountRequest.post('/token-refresh', data)
+export const apiRefreshToken = (data) => apiAccountRequest.post('/token-refresh', data)
 
 // export const apiRefreshToken = (data) =>
 //     apiAccountRequest.post('/token-refresh', data, {
@@ -42,30 +40,21 @@ export const apiRefreshToken = (data) =>
 //     )
 
 export const apiUpdateUserProfile = () =>
-    apiAccountRequest.get(
-        '/profile',
-        {
-            headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
-        }
-    )
+    apiAccountRequest.get('/profile', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+    })
 
-export const apiLogoutRevokeToken = (data) =>
-    apiAccountRequest.post('/logout', data)
+export const apiLogoutRevokeToken = (data) => apiAccountRequest.post('/logout', data)
 
-export const apiRegisterUser = (data) =>
-    apiAccountRequest.post('', data)
+export const apiRegisterUser = (data) => apiAccountRequest.post('', data)
 
-export const apiApplyResetPassword = (data) =>
-    apiAccountRequest.post('/forget-password', data)
+export const apiApplyResetPassword = (data) => apiAccountRequest.post('/forget-password', data)
 
-export const apiResetPassword = (data) =>
-    apiAccountRequest.post('/reset-password', data)
+export const apiResetPassword = (data) => apiAccountRequest.post('/reset-password', data)
 
-export const apiRegisterValidate = (data) =>
-    apiAccountRequest.post('/validate-account', data)
+export const apiRegisterValidate = (data) => apiAccountRequest.post('/validate-account', data)
 
-export const apiReissueRegister = (data) =>
-    apiAccountRequest.post('/reissue-activate', data)
+export const apiReissueRegister = (data) => apiAccountRequest.post('/reissue-activate', data)
 
 // export const apiTokenExpireCheck = () =>
 //     apiAccountRequest.get(
@@ -76,42 +65,55 @@ export const apiReissueRegister = (data) =>
 //     )
 
 export const apiTokenExpireCheck = () =>
-    apiAccountRequest.post(
-        '/token-expire-check',
-        {
-            "token": localStorage.getItem('access_token')
-        }
-    )
+    apiAccountRequest.post('/token-expire-check', {
+        token: localStorage.getItem('access_token'),
+    })
 
 // GET Method send params
 export const apiFetchBookTodo = (order_by, is_checked) =>
     apiBookTodoRequest.get('', {
         params: {
             order_by: order_by,
-            is_checked: is_checked
+            is_checked: is_checked,
         },
-        headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
     })
 
 export const apiAddBookTodo = (data) =>
     apiBookTodoRequest.post('', data, {
-        headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
     })
 
 export const apiEditBookTodo = (id, data) =>
     apiBookTodoRequest.put(`/${id}`, data, {
-        headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
     })
 
 export const apiDeleteBookTodo = (id) =>
     apiBookTodoRequest.delete(`/${id}`, {
-        headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
     })
 
-
 export const apiCheckBookTodo = (id, is_checked) =>
-    apiBookTodoRequest.patch(`/${id}`,{
-        "is_read": is_checked
-    }, {
-        headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}
+    apiBookTodoRequest.patch(
+        `/${id}`,
+        {
+            is_read: is_checked,
+        },
+        {
+            headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+        }
+    )
+
+export const apiExportBookTodo = (is_checked, order_by, export_type) =>
+    apiBookTodoRequest.get('/export-todo', {
+        params: {
+            is_checked: is_checked,
+            order_by: order_by,
+            export_type: export_type,
+        },
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+        responseType: 'blob',
     })

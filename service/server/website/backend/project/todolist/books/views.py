@@ -4,12 +4,14 @@ from rest_framework import viewsets, status
 from .models import BookList
 from rest_framework.parsers import JSONParser
 from .serializers import AddBookTodoSerializer, RetrieveBookTodoSerializer, UpdateBookTodoSerializer, \
-                        UpdateBookTodoIsReadSerializer, RetrieveUnDoneBookTodoSerializer, RetrieveCompletedBookTodoSerializer
+                        UpdateBookTodoIsReadSerializer, RetrieveUnDoneBookTodoSerializer, RetrieveCompletedBookTodoSerializer, \
+                        ExportUnDoneBookTodoSerializer, ExportCompletedBookTodoSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .views_func import BookListViewsFunc
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import action
+from module.file_downloader import FileDownloader
 
 
 # Create your views here.
@@ -21,14 +23,17 @@ class BookListViewset(viewsets.ModelViewSet):
 
     def list(self, request):
         try:
-            is_checked = request.query_params.get('is_checked', None)
-            order_by = request.query_params.get('order_by', None)
-            filter_type = True if is_checked == 'true' else False
-            queryset = self.viewset_func.retrieveUserDataOrderBy(request.user, order_by, bool(filter_type))
-            serializer = RetrieveUnDoneBookTodoSerializer(queryset, many=True) if filter_type is False else RetrieveCompletedBookTodoSerializer(queryset, many=True)
-            data = serializer.data
+            data = request.query_params
+            is_checked = data.get('is_checked', None)
+            order_by = data.get('order_by', None)
+            if is_checked == 'true':
+                queryset = self.viewset_func.retrieveUserDataOrderBy(request.user, order_by, True)
+                serializer = RetrieveCompletedBookTodoSerializer(queryset, many=True)
+            else:
+                queryset = self.viewset_func.retrieveUserDataOrderBy(request.user, order_by, False)
+                serializer = RetrieveUnDoneBookTodoSerializer(queryset, many=True)
             res_msg = {
-                "info": data
+                "info": serializer.data
             }
             return Response(res_msg, status=status.HTTP_200_OK)
         except Exception as e:
@@ -160,4 +165,43 @@ class BookListViewset(viewsets.ModelViewSet):
                 "message": "delete data failed.",
                 "is_deleted": False
             }
+            return Response(res_msg, status=status.HTTP_400_BAD_REQUEST)
+
+    # if setting.py " DEFAULT_PERMISSION_CLASSES " not set " IsAuthenticated ", then permission_classes must add " IsAuthenticated "
+    # @action(methods=['POST'], detail=False, url_path='export-todo', permission_classes=[IsAuthenticated])
+    @action(methods=['GET'], detail=False, url_path='export-todo')
+    def export_todo(self, request):
+        try:
+            data = request.query_params
+            is_checked = data.get('is_checked', None)
+            order_by = data.get('order_by', None)
+            export_type = data.get('export_type', None)
+
+            if is_checked is None or order_by is None or export_type is None:
+                raise Exception('The field is checked and order by and export type can not be empty')
+
+            if is_checked == 'true':
+                queryset = self.viewset_func.retrieveUserDataOrderBy(request.user, order_by, True)
+                serializer = ExportCompletedBookTodoSerializer(queryset, many=True)
+                write_columns = ['Title', 'author', 'Price', 'Nationality', 'Link', 'Due Date', 'Is Read?', 'Last Completed Date', 'Created At', 'Due Days']
+            else:
+                queryset = self.viewset_func.retrieveUserDataOrderBy(request.user, order_by, False)
+                serializer = ExportUnDoneBookTodoSerializer(queryset, many=True)
+                write_columns = ['Title', 'Author', 'Price', 'Nationality', 'Link', 'Due Date', 'Is Read?', 'Last Modified Date', 'Created At', 'Due Days', 'Will Due Days']
+
+            if export_type == 'csv':
+                file_downloader = FileDownloader()
+                export_info = file_downloader.export_csv_by_http_response(
+                    filename="default_todo_list_data",
+                    write_columns=write_columns,
+                    serializer_data=serializer.data
+                )
+            return export_info
+            # return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            res_msg = {
+                "error": e.args[0],
+                "message": "export data failed.",
+            }
+            print(res_msg)
             return Response(res_msg, status=status.HTTP_400_BAD_REQUEST)
