@@ -106,7 +106,7 @@ class UserViewset(viewsets.ModelViewSet):
             queryset = self.viewset_func.obtainUsernameById(pk)
             instance = get_object_or_404(queryset)
             self.perform_destroy(instance)
-            return Response({'message': 'delete user successfully.', 'is_removed': True}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'message': 'delete user successfully.', 'is_removed': True}, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             return Response({
                 'error': e.args[0],

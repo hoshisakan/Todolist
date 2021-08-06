@@ -215,7 +215,7 @@ export default function TodoBook(props) {
                 <Modal show={displayDeleteConfirm} backdrop="static" keyboard={false}>
                     <Modal.Header style={{ background: renderCardColor, color: 'white' }}>
                         <Modal.Title>
-                            <p>Confirm action delete</p>
+                            <p>Confirm delete</p>
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
