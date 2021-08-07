@@ -1,5 +1,7 @@
 import datetime
 from datetime import datetime as dt
+import pytz, dateutil.parser
+import pandas as pd
 
 class DateTimeTools():
     @staticmethod
@@ -25,6 +27,16 @@ class DateTimeTools():
     @staticmethod
     def format_datetime_str(format_datetime):
         return format_datetime.strftime("%Y-%m-%d %H:%M:%S")
+
+    @staticmethod
+    def format_date_str(format_datetime):
+        return format_datetime.strftime("%Y-%m-%d")
+
+    @classmethod
+    def format_local_datetime_to_str(cls, format_datetime):
+        # return cls.format_datetime_str(format_datetime + cls.obtain_hours_datetime(8))
+        utctime = dateutil.parser.parse(cls.format_datetime_str(format_datetime + cls.obtain_hours_datetime(8)))
+        return utctime.astimezone(pytz.timezone("Asia/Taipei"))
 
     @staticmethod
     def format_second_str(format_datetime):

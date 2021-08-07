@@ -114,6 +114,7 @@ export const apiExportBookTodo = (is_checked, order_by, export_type) =>
         },
         headers: {
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+            'Content-Type': 'text/csv'
         },
         responseType: 'blob',
     })

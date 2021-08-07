@@ -18,3 +18,5 @@ django-anymail
 djangorestframework_simplejwt
 six
 itsdangerous
+python-dateutil
+pandas

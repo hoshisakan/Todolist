@@ -8,5 +8,5 @@ RUN npm cache clean --force
 
 RUN npm install -g create-react-app
 
-# WORKDIR /usr/src/app/todolist-app/
-WORKDIR /usr/src/app/
+WORKDIR /usr/src/app/todolist-app/
+# WORKDIR /usr/src/app/

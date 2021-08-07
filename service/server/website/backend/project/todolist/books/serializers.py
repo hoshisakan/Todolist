@@ -2,6 +2,8 @@ from .models import BookList
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.utils.timezone import now, localtime
+from module.date import DateTimeTools as DT
+
 
 class BookListSerializer(serializers.ModelSerializer):
     days_since_created = serializers.SerializerMethodField()
@@ -89,6 +91,8 @@ class UpdateBookTodoIsReadSerializer(serializers.ModelSerializer):
 
 class ExportUnDoneBookTodoSerializer(serializers.ModelSerializer):
     is_read = serializers.SerializerMethodField()
+    last_modify_date= serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField()
     due_days = serializers.SerializerMethodField()
     will_due_days = serializers.SerializerMethodField()
 
@@ -98,6 +102,12 @@ class ExportUnDoneBookTodoSerializer(serializers.ModelSerializer):
 
     def get_is_read(self, obj):
         return 'Unread' if obj.is_read is False else 'Read'
+
+    def get_last_modify_date(self, obj):
+        return DT.format_local_datetime_to_str(obj.last_modify_date)
+
+    def get_created_at(self, obj):
+        return DT.format_local_datetime_to_str(obj.created_at)
 
     def get_due_days(self, obj):
         obtain_due_days = (localtime(now()).date() - obj.due_date).days
@@ -111,6 +121,8 @@ class ExportUnDoneBookTodoSerializer(serializers.ModelSerializer):
 
 class ExportCompletedBookTodoSerializer(serializers.ModelSerializer):
     is_read = serializers.SerializerMethodField()
+    last_modify_date= serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField()
     due_days = serializers.SerializerMethodField()
 
     class Meta:
@@ -119,6 +131,12 @@ class ExportCompletedBookTodoSerializer(serializers.ModelSerializer):
 
     def get_is_read(self, obj):
         return 'Unread' if obj.is_read is False else 'Read'
+
+    def get_last_modify_date(self, obj):
+        return DT.format_local_datetime_to_str(obj.last_modify_date)
+
+    def get_created_at(self, obj):
+        return DT.format_local_datetime_to_str(obj.created_at)
 
     def get_due_days(self, obj):
         obtain_due_days = (localtime(now()).date() - obj.due_date).days
