@@ -85,7 +85,6 @@ services:
     mysql:
         image: mysql:5.7
         container_name: dev_mysql
-        # command: 'mysqld --init-file /data/application/init.sql'
         ports:
             - 3306:3306
         env_file:
