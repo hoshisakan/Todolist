@@ -18,26 +18,6 @@
 ### Revoke Book Todo
 ![alt text](./images/revoke_todo.png)
 
-
-# Features
-### Different accounts register and login
-![alt text](./images/register_login_account.gif)
-
-### Accounts forget password apply and reset password
-![alt text](./images/reset_password.gif)
-
-### Different accounts CRUD Book Todo
-![alt text](./images/CRUD_book_todo.gif)
-
-### Sort todo list item
-![alt text](./images/retrieve_todo_list_and_order_by.gif)
-
-### Check and Revoke
-![alt text](./images/check_and_revoke.gif)
-
-## 2021-08-07 Add Export Todolist To CSV File
-<br/>
-
 ### Export Incomplete Todolist To CSV File
 ![alt text](./images/export_incompelte_todolist_to_csv.gif)
 
